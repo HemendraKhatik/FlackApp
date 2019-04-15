@@ -1,9 +1,6 @@
 flask
 flask_session
 sqlalchemy
-sqlalchemy.orm
-scoped_session
-sessionmaker
 gunicorn
 flask_socketio
 functools
