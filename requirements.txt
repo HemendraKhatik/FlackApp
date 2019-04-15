@@ -4,4 +4,4 @@ sqlalchemy
 gunicorn
 flask_socketio
 setuptools
-functools
+
