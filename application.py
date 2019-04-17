@@ -4,7 +4,7 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_socketio import SocketIO, emit ,join_room
-from functools import wraps # for security purpose
+from . functools import wraps # for security purpose
 
 app = Flask(__name__)
 DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87cd76999ccb90c8c99a0ec982f3267de@ec2-23-21-130-182.compute-1.amazonaws.com:5432/da71gb54aqbou7"
