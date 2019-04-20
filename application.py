@@ -1,10 +1,10 @@
 import os
-from flask import Flask, session, render_template, request, url_for,redirect,flash
+from flask import Flask, session, render_template, request, url_for, redirect, flash, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_socketio import SocketIO, emit ,join_room
-from . functools import wraps # for security purpose
+from functools import wraps # for security purpose
 
 app = Flask(__name__)
 DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87cd76999ccb90c8c99a0ec982f3267de@ec2-23-21-130-182.compute-1.amazonaws.com:5432/da71gb54aqbou7"
@@ -71,6 +71,8 @@ def login():
 				"""Using session here to keep all users sessions separate from each other"""
 				session['logged_in'] = True
 				session['username'] = q.username
+				# global un
+				# un = q.username
 				session['user_id'] = q.id
 				return redirect(url_for('home'))
 	if request.method == "GET":
@@ -87,6 +89,8 @@ def logout():
 def home():
 	if request.method == "POST":
 		channels = db.execute("SELECT * FROM user_channel").fetchall()
+		# global un
+		# print(un)
 		return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'],channels=channels)
 	else:
 		if request.method == "GET":
@@ -142,13 +146,24 @@ def channel(channel_id):
 	global channels	
 	return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'], channel_name=channel_name,channels=channels,channel_decription=channel_decription)    
 
+@socketio.on("search room")
+def message(data):
+	channel = data['room']
+	room = db.execute("SELECT * FROM user_channel WHERE channel LIKE :channel",
+	{"channel":channel}).fetchall()
+	print(room)
+	emit("announce room", {"room":room}, broadcast=True)
+
 @socketio.on("submit message")
 def message(data):
 	message = data['message']
 	name = data['name']
 	room = data['rooma']
+	from datetime import datetime
+	now = datetime.now()
+	time = now.strftime("%I:%M:%S")
 	join_room(room)
-	emit("announce message", {"message": message,"name":name}, room=room, broadcast=True)
+	emit("announce message", {"message": message,"name":name,"time":time}, room=room, broadcast=True)
 
 if __name__ == '__main__':
 	app.run(host= '0.0.0.0')

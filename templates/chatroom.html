@@ -15,7 +15,7 @@
 </head>
   <body>
     <div class="container-fluid">
-      <div class="row ">
+      <div class="row">
         <!-- Navigation -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
           <div class="container">
@@ -56,16 +56,25 @@
                   <h2>Set Your Anonymous Name</h2>
                   <input type="text" id="name" value="Hello, {{ user_name }}!"  required="">
                   <center>
-                    <input style="cursor: pointer;" id="nama" type="submit" onclick="setName()" value="Set">
+                    <input class="pointer" id="nama" type="submit" onclick="setName()" value="Set">
                   </center>
               </div>
            </div>
            <div class="setRoom">
             <!-- Showing all rooms -->
-             <h2>Rooms</h2>
-
+            <div class="container">
+              <div class="row p-3 text-center">
+                <div class="col-md-6">
+                  <p class="pointer" data-toggle="modal" data-target="#channelCreation">+ Create room</p>
+                </div>
+                <div class="col-md-6">
+                  <p class="pointer" data-toggle="modal" data-target="#roomsearch">+ Join room</p>
+                </div>
+              </div> 
+            </div>
+  
+              <h2>Rooms</h2> 
              <ul>
-              <p class="pointer" data-toggle="modal" data-target="#channelCreation">+ Create a room</p>
               {% for channel in channels %}
                  <li><i class="far fa-comments"></i> 
                   <a href="{{ url_for('channel', channel_id=channel.id) }}">
@@ -79,15 +88,15 @@
          <div class="col-md-6 chatBox mt-3">
            <div class="row">
             <div class="chatBoxHeader pt-2">
-              <center><h5 class="font_style">You are connected to <span id="room">{{ flack }}{{ channel_name }}</span> room , Say Hi !</h5></center>
+              <center><h5 class="font_style">Connected to <span id="room">{{ flack }}{{ channel_name }}</span> room</h5></center>
              </div>
-             <div class="chatBoxBody p-4" id="message">
+             <div style="color: black;" class="chatBoxBody p-4" id="message">
                <!-- Messages will appear here-->
              </div>
              <div class="chatBoxFooter">
                <!-- Message sending bar -->
                <input type="text" id="task1" placeholder="Send Message..."/>
-               <button type="submit" id="send">
+               <button class="pointer" type="submit" id="send">
                 <i class="far fa-paper-plane"></i>
               </button>
              </div>
@@ -124,6 +133,35 @@
                   <button type="sumbit"  class="btn btn-secondary">Create</button>
                   <button type="button" class="btn btn-primary" data-dismiss="modal">close</button>
                 </form>
+                </div>
+              </div>
+            </div>
+          </div>
+         <!-- Modal End -->
+             <!-- channelCreation Modal Start -->
+          <div class="modal fade" id="roomsearch" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">Create channel</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">Room name</label>
+                      <input type="text" name="Room" class="form-control" id="room-name">
+                    </div>
+                    <div id="roomResults">
+                      {% for r in room %}
+                        {{ r }}
+                      {% endfor %}
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                  <button id="search" class="btn btn-secondary">Search</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">close</button>
                 </div>
               </div>
             </div>

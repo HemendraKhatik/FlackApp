@@ -20,19 +20,19 @@
             <h2>Sign Up</h2>
             <form action="{{ url_for('signup') }}" method="POST">
               <div class="inputBox">
-                <input type="text" name="username"  required="">
+                <input type="text" name="username" autocomplete="off" required="">
                 <label for="stuff" class="fas fa-user input-icon"> Username</label>
               </div>
               <div class="inputBox">
-                <input type="text" name="email"  required="">
+                <input type="text" name="email" autocomplete="off" required="">
                 <label for="stuff" class="fas fa-envelope input-icon"> Email</label>
               </div>
               <div class="inputBox">
-                <input type="password" name="password" required="">
+                <input type="password" name="password" autocomplete="off" required="">
                 <label for="stuff" class="fas fa-lock input-icon"> password</label>
               </div>
               <div class="inputBox">
-                <input type="password" name="c_password" required="">
+                <input type="password" name="c_password" autocomplete="off" required="">
                 <label for="stuff" class="fas fa-lock input-icon">confirm password</label>
               </div>
               <input type="submit" name="" value="Sign up">

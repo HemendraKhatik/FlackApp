@@ -25,11 +25,11 @@
             <h2>Login</h2>
             <form action="{{ url_for('login') }}" method="POST">
               <div class="inputBox">
-                <input type="text" name="username"  required="">
+                <input type="text" name="username" autocomplete="off"  required="">
                 <label for="stuff" class="fas fa-envelope input-icon"> Email</label>
               </div>
               <div class="inputBox">
-                <input type="password" name="password" required="">
+                <input type="password" name="password" autocomplete="off" required="">
                 <label for="stuff" class="fas fa-lock input-icon"> password</label>
               </div>
               <input type="submit" name="" value="Login">

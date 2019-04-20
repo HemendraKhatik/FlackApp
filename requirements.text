@@ -1,0 +1,6 @@
+flask
+flask_session
+sqlalchemy
+gunicorn
+flask_socketio
+functools
