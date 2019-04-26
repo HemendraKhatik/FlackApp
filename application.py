@@ -164,4 +164,4 @@ def message(data):
 	emit("announce message", {"message": message,"name":name,"time":time}, room=room, broadcast=True)
 
 if __name__ == '__main__':
-	app.run(host= '0.0.0.0')
+	app.run(DEBUG='True')
