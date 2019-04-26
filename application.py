@@ -65,6 +65,7 @@ def login():
 		query=db.execute("SELECT * FROM user_signup_data WHERE username=:username AND password=:password",
 		{"username":username,"password":password}).fetchall()
 		"""Lists all channels."""
+		global channels
 		channels = db.execute("SELECT * FROM user_channel").fetchall()
 		for q in query:
 			if q.username==username and q.password==password:
@@ -88,9 +89,7 @@ def logout():
 @app.route("/home",methods=["POST","GET"]) 
 def home():
 	if request.method == "POST":
-		channels = db.execute("SELECT * FROM user_channel").fetchall()
-		# global un
-		# print(un)
+		global channels
 		return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'],channels=channels)
 	else:
 		if request.method == "GET":
@@ -128,7 +127,6 @@ def channel_creation():
 def channels():
 	"""Lists all channels."""
 	global channels
-	channels = db.execute("SELECT * FROM user_channel").fetchall()
 	flack="Flack"
 	return render_template("chatroom.html",flack=flack,user_id=session['user_id'],user_name=session['username'], channels=channels)
 
@@ -144,7 +142,7 @@ def channel(channel_id):
 	channel_name =''.join(db.execute("SELECT channel FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
 	channel_decription =''.join(db.execute("SELECT description FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
 	global channels	
-	return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'], channel_name=channel_name,channels=channels,channel_decription=channel_decription)    
+	return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'], channel_name=channel_name,channels=channels, channel_decription=channel_decription)    
 
 @socketio.on("search room")
 def message(data):
