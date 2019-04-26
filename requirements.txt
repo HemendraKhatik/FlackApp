@@ -3,4 +3,4 @@ flask_session
 sqlalchemy
 gunicorn
 flask_socketio
-setuptools
+setuptools==0.7.3
