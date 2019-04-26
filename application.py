@@ -124,7 +124,7 @@ def channel_creation():
 
 @app.route("/channels")
 @login_required
-def channela():
+def channels():
 	"""Lists all channels."""
 	global channels
 	flack="Flack"
