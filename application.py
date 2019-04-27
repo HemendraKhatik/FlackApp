@@ -123,7 +123,7 @@ def channel_creation():
 	db.close()			
 	return redirect(url_for('channels'))
 
-@app.route("/channels")
+@app.route("/channel")
 @login_required
 def channelslist():
 	"""Lists all channels."""
@@ -132,7 +132,7 @@ def channelslist():
 	flack="Flack"
 	return render_template("chatroom.html",flack=flack,user_id=session['user_id'],user_name=session['username'], channels=channels)
 
-@app.route("/channels/<int:channel_id>")
+@app.route("/channel/<int:channel_id>")
 @login_required
 def channel(channel_id):
 	"""Lists details about a single channel."""
