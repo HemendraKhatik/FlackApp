@@ -71,8 +71,6 @@ def login():
 				"""Using session here to keep all users sessions separate from each other"""
 				session['logged_in'] = True
 				session['username'] = q.username
-				# global un
-				# un = q.username
 				session['user_id'] = q.id
 				return redirect(url_for('home'))
 	if request.method == "GET":
@@ -89,8 +87,6 @@ def logout():
 def home():
 	if request.method == "POST":
 		channels = db.execute("SELECT * FROM user_channel").fetchall()
-		# global un
-		# print(un)
 		return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'],channels=channels)
 	else:
 		if request.method == "GET":
@@ -135,15 +131,13 @@ def channels():
 @app.route("/channels/<int:channel_id>")
 @login_required
 def channel(channel_id):
-	"""Lists details about a single channel."""
-	# Make sure flight exists.
 	channel = db.execute("SELECT * FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone()
 	if channel is None:
 		return "No such channel."
 	# I'm using ''.join here because query return a tuple
 	channel_name =''.join(db.execute("SELECT channel FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
 	channel_decription =''.join(db.execute("SELECT description FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
-	global channels	
+	channels = db.execute("SELECT * FROM user_channel").fetchall()	
 	return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'], channel_name=channel_name,channels=channels,channel_decription=channel_decription)    
 
 @socketio.on("search room")
@@ -166,4 +160,4 @@ def message(data):
 	emit("announce message", {"message": message,"name":name,"time":time}, room=room, broadcast=True)
 
 if __name__ == '__main__':
-	app.run()
+	app.run(host= '0.0.0.0')
