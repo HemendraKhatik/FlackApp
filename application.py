@@ -123,16 +123,16 @@ def channel_creation():
 	db.close()			
 	return redirect(url_for('channels'))
 
-@app.route("/channel")
+@app.route("/channels")
 @login_required
-def channelslist():
+def channels():
 	"""Lists all channels."""
 	global channels
 	channels = db.execute("SELECT * FROM user_channel").fetchall()
 	flack="Flack"
 	return render_template("chatroom.html",flack=flack,user_id=session['user_id'],user_name=session['username'], channels=channels)
 
-@app.route("/channel/<int:channel_id>")
+@app.route("/channels/<int:channel_id>")
 @login_required
 def channel(channel_id):
 	"""Lists details about a single channel."""
@@ -166,4 +166,4 @@ def message(data):
 	emit("announce message", {"message": message,"name":name,"time":time}, room=room, broadcast=True)
 
 if __name__ == '__main__':
-	app.run(host= '0.0.0.0')
+	app.run()
