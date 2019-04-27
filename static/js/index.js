@@ -6,7 +6,7 @@ function setName() {
 document.addEventListener('DOMContentLoaded', () => {
 
     // Connect to websocket
-    var socket = io.connect(https://flack-web-app.herokuapp.com);
+    var socket = io.connect('https://flack-web-app.herokuapp.com');
      
     // When connected
     socket.on('connect', () => {   
