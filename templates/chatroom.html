@@ -77,7 +77,7 @@
              <ul>
               {% for channel in channels %}
                  <li><i class="far fa-comments"></i> 
-                  <a href="{{ url_for('channel', channel_id=channel.id) }}">
+                  <a href="{{ url_for('channels', channel_id=channel.id) }}">
                    {{ channel.channel }}
                   </a>
                  </li>
