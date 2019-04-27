@@ -125,7 +125,7 @@ def channel_creation():
 
 @app.route("/channels")
 @login_required
-def channels():
+def channelslist():
 	"""Lists all channels."""
 	global channels
 	channels = db.execute("SELECT * FROM user_channel").fetchall()
