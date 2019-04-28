@@ -6,7 +6,7 @@ function setName() {
 document.addEventListener('DOMContentLoaded', () => {
 
     // Connect to websocket
-    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/test');
      
     // When connected
     socket.on('connect', () => {   
