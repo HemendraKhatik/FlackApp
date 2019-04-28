@@ -157,6 +157,7 @@ def message(data):
 	now = datetime.now()
 	time = now.strftime("%I:%M:%S")
 	join_room(room)
+	print(message)
 	emit("announce message", {"message": message,"name":name,"time":time}, room=room, broadcast=True)
 
 if __name__ == '__main__':
