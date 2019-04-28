@@ -140,7 +140,7 @@ def channel(channel_id):
 	channels = db.execute("SELECT * FROM user_channel").fetchall()	
 	return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'], channel_name=channel_name,channels=channels,channel_decription=channel_decription)    
 
-@socketio.on("search room")
+@socketio.on("search room", namespace='/test')
 def message(data):
 	channel = data['room']
 	room = db.execute("SELECT * FROM user_channel WHERE channel LIKE :channel",
@@ -148,7 +148,7 @@ def message(data):
 	print(room)
 	emit("announce room", {"room":room}, broadcast=True)
 
-@socketio.on("submit message")
+@socketio.on("submit message", namespace='/test')
 def message(data):
 	message = data['message']
 	name = data['name']
