@@ -2,5 +2,6 @@ flask
 flask_session
 sqlalchemy
 gunicorn
+geventwebsocket
 flask_socketio
 psycopg2
