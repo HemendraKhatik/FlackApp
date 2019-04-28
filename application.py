@@ -14,7 +14,7 @@ socketio = SocketIO(app)
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
-    raise RuntimeError("DATABASE_URL is not set")
+	raise RuntimeError("DATABASE_URL is not set")
 
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = False
@@ -140,15 +140,14 @@ def channel(channel_id):
 	channels = db.execute("SELECT * FROM user_channel").fetchall()	
 	return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'], channel_name=channel_name,channels=channels,channel_decription=channel_decription)    
 
-@socketio.on("search room", namespace='/test')
+@socketio.on("search room")
 def message(data):
 	channel = data['room']
 	room = db.execute("SELECT * FROM user_channel WHERE channel LIKE :channel",
 	{"channel":channel}).fetchall()
-	print(room)
 	emit("announce room", {"room":room}, broadcast=True)
 
-@socketio.on("submit message", namespace='/test')
+@socketio.on("submit message")
 def message(data):
 	message = data['message']
 	name = data['name']
@@ -157,7 +156,6 @@ def message(data):
 	now = datetime.now()
 	time = now.strftime("%I:%M:%S")
 	join_room(room)
-	print(message)
 	emit("announce message", {"message": message,"name":name,"time":time}, room=room, broadcast=True)
 
 if __name__ == '__main__':
