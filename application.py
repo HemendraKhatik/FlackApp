@@ -3,7 +3,7 @@ from flask import Flask, session, render_template, request, url_for, redirect, f
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from flask_socketio import SocketIO, emit ,join_room
+from flask_socketio import SocketIO, emit ,join_room, send
 from functools import wraps # for security purpose
 
 app = Flask(__name__)
@@ -14,7 +14,7 @@ socketio = SocketIO(app)
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
-	raise RuntimeError("DATABASE_URL is not set")
+    raise RuntimeError("DATABASE_URL is not set")
 
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = False
@@ -131,21 +131,21 @@ def channels():
 @app.route("/channels/<int:channel_id>")
 @login_required
 def channel(channel_id):
+	# Make sure channel exists.
 	channel = db.execute("SELECT * FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone()
 	if channel is None:
 		return "No such channel."
 	# I'm using ''.join here because query return a tuple
 	channel_name =''.join(db.execute("SELECT channel FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
 	channel_decription =''.join(db.execute("SELECT description FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
-	channels = db.execute("SELECT * FROM user_channel").fetchall()	
+	channels =channels = db.execute("SELECT * FROM user_channel").fetchall()	
 	return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'], channel_name=channel_name,channels=channels,channel_decription=channel_decription)    
 
-@socketio.on("search room")
-def message(data):
-	channel = data['room']
-	room = db.execute("SELECT * FROM user_channel WHERE channel LIKE :channel",
-	{"channel":channel}).fetchall()
-	emit("announce room", {"room":room}, broadcast=True)
+@socketio.on("connection")
+def connection(data):
+	print(data['msg'])
+	user = data['msg']
+	emit("connection successful",{'user':user}, broadcast=True)
 
 @socketio.on("submit message")
 def message(data):
@@ -159,4 +159,4 @@ def message(data):
 	emit("announce message", {"message": message,"name":name,"time":time}, room=room, broadcast=True)
 
 if __name__ == '__main__':
-	app.run(host= '0.0.0.0')
+	socketio.run(app)
