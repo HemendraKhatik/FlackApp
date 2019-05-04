@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <!-- for animation -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+   <!-- jQuery library -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 <title>Home</title>
 </head>
   <body>
@@ -58,17 +60,40 @@
                   <center>
                     <input class="pointer" id="nama" type="submit" onclick="setName()" value="Set">
                   </center>
+                  <center><span id="userOnline"></span></center>
               </div>
            </div>
            <div class="setRoom">
             <!-- Showing all rooms -->
             <div class="container">
-              <div class="row p-3 text-center">
+              <div class="row p-3">
                 <div class="col-md-6">
-                  <p class="pointer" data-toggle="modal" data-target="#channelCreation">+ Create room</p>
+                  <p onclick="on()" class="pointer">+ Create room</p>
                 </div>
+                <div id="overlay">
+                  <div id="createRoom">
+                    <h3>Create room</h3>
+                  <form action="{{ url_for('channel_creation') }}" method="POST">
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">Channel name</label>
+                      <input type="text" name="channel" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="form-group">
+                      <label for="message-text" class="col-form-label">Description</label>
+                      <textarea class="form-control" name="description" id="message-text"></textarea>
+                    </div>
+                    <!-- Sending hidden parameter so that we can know that which channel is belongs to which user -->
+                    <input type="hidden" name="u_id" value="{{ user_id }}">
+                    <button onclick="off()" type="submit" class="btn btn-primary m-2 float-right">Create</button>
+                  </form>
+                    <button onclick="off()" class="btn btn-primary m-2 float-right">close</button>
+                  </div>
+                </div>
+                <script>
+               
+                </script>
                 <div class="col-md-6">
-                  <p class="pointer" data-toggle="modal" data-target="#roomsearch">+ Join room</p>
+                  <!-- <p class="pointer">+ Join room</p> -->
                 </div>
               </div> 
             </div>
@@ -78,7 +103,7 @@
               {% for channel in channels %}
                  <li><i class="far fa-comments"></i> 
                   <a href="{{ url_for('channel', channel_id=channel.id) }}">
-                   {{ channel.channel }}
+                  <span>{{ channel.channel }}</span>
                   </a>
                  </li>
                {% endfor %}
@@ -92,11 +117,16 @@
              </div>
              <div style="color: black;" class="chatBoxBody p-4" id="message">
                <!-- Messages will appear here-->
+               <div id="pop" class="p-4 text-center animated bounceIn delay-1s">
+                 <h4>Enter in {{ flack }}{{ channel_name }}</h4>
+                 <p>{{ channel_decription }}</p>
+                 <button id="enter" class="btn btn-secondary">Enter</button>
+               </div>
              </div>
              <div class="chatBoxFooter">
                <!-- Message sending bar -->
                <input type="text" id="task1" placeholder="Send Message..."/>
-               <button class="pointer" type="submit" id="send">
+               <button class="pointer" type="submit" id="send" disabled>
                 <i class="far fa-paper-plane"></i>
               </button>
              </div>
@@ -105,76 +135,12 @@
          <div class="col-md-1"><!-- Hidden div --></div>
       </div>
     </div>
-
-    <!-- channelCreation Modal Start -->
-          <div class="modal fade" id="channelCreation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">Create channel</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <form action="{{ url_for('channel_creation') }}" method="POST">
-                    <div class="form-group">
-                      <label for="recipient-name" class="col-form-label">Channel name</label>
-                      <input type="text" name="channel" class="form-control" id="recipient-name">
-                    </div>
-                    <div class="form-group">
-                      <label for="message-text" class="col-form-label">Description</label>
-                      <textarea class="form-control" name="description" id="message-text"></textarea>
-                    </div>
-                    <!-- Sending hidden parameter so that we can know that which channel is belongs to which user -->
-                    <input type="hidden" name="u_id" value="{{ user_id }}">
-                </div>
-                <div class="modal-footer">
-                  <button type="sumbit"  class="btn btn-secondary">Create</button>
-                  <button type="button" class="btn btn-primary" data-dismiss="modal">close</button>
-                </form>
-                </div>
-              </div>
-            </div>
-          </div>
-         <!-- Modal End -->
-             <!-- channelCreation Modal Start -->
-          <div class="modal fade" id="roomsearch" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">Create channel</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                      <label for="recipient-name" class="col-form-label">Room name</label>
-                      <input type="text" name="Room" class="form-control" id="room-name">
-                    </div>
-                    <div id="roomResults">
-                      {% for r in room %}
-                        {{ r }}
-                      {% endfor %}
-                    </div>                    
-                </div>
-                <div class="modal-footer">
-                  <button id="search" class="btn btn-secondary">Search</button>
-                  <button type="button" class="btn btn-primary" data-dismiss="modal">close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-         <!-- Modal End -->
     <!-- Latest compiled JavaScript -->
     
     <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
     <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <!-- jQuery library -->
-    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <!--Popper.js, then Bootstrap JS -->
     <!-- Popper JS -->
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
