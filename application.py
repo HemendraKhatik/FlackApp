@@ -126,7 +126,8 @@ def channels():
 	global channels
 	channels = db.execute("SELECT * FROM user_channel").fetchall()
 	flack="Flack"
-	return render_template("chatroom.html",flack=flack,user_id=session['user_id'],user_name=session['username'], channels=channels)
+	channel_decription ="This room is flack official public room"
+	return render_template("chatroom.html",flack=flack,user_id=session['user_id'],user_name=session['username'], channels=channels,channel_decription=channel_decription)
 
 @app.route("/channels/<int:channel_id>")
 @login_required
@@ -140,13 +141,7 @@ def channel(channel_id):
 	channel_decription =''.join(db.execute("SELECT description FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
 	channels =channels = db.execute("SELECT * FROM user_channel").fetchall()	
 	return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'], channel_name=channel_name,channels=channels,channel_decription=channel_decription)    
-
-@socketio.on("connection")
-def connection(data):
-	print(data['msg'])
-	user = data['msg']
-	emit("connection successful",{'user':user}, broadcast=True)
-
+	
 @socketio.on("submit message")
 def message(data):
 	message = data['message']
