@@ -76,11 +76,11 @@
                   <form action="{{ url_for('channel_creation') }}" method="POST">
                     <div class="form-group">
                       <label for="recipient-name" class="col-form-label">Channel name</label>
-                      <input type="text" name="channel" class="form-control" id="recipient-name">
+                      <input type="text" name="channel" class="form-control" id="recipient-name" required>
                     </div>
                     <div class="form-group">
                       <label for="message-text" class="col-form-label">Description</label>
-                      <textarea class="form-control" name="description" id="message-text"></textarea>
+                      <textarea class="form-control" name="description" id="message-text" required></textarea>
                     </div>
                     <!-- Sending hidden parameter so that we can know that which channel is belongs to which user -->
                     <input type="hidden" name="u_id" value="{{ user_id }}">
@@ -140,7 +140,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
     <!-- Optional JavaScript -->
-    <!--Popper.js, then Bootstrap JS -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!-- Popper JS -->
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
