@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
           name = localStorage.getItem('name');
           const message ="Entered in room"           
           const rooma = document.querySelector('#room').innerHTML;
-          socket.emit('submit message', {'message': message,'name':name, 'rooma':rooma});
+          socket.emit('entry message', {'message': message,'name':name, 'rooma':rooma});
         });
       
         //should emit a "submit message" event
