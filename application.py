@@ -141,6 +141,17 @@ def channel(channel_id):
 	channel_decription =''.join(db.execute("SELECT description FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
 	channels =channels = db.execute("SELECT * FROM user_channel").fetchall()	
 	return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'], channel_name=channel_name,channels=channels,channel_decription=channel_decription)    
+
+@socketio.on("entry message")
+def message(data):
+	message = data['message']
+	name = data['name']
+	room = data['rooma']
+	from datetime import datetime
+	now = datetime.now()
+	time = now.strftime("%I:%M:%S")
+	join_room(room)
+	emit("announce message", {"message": message,"name":name,"time":time}, room=room, broadcast=True)
 	
 @socketio.on("submit message")
 def message(data):
