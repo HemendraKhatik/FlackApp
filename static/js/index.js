@@ -31,8 +31,21 @@ document.addEventListener('DOMContentLoaded', () => {
           const rooma = document.querySelector('#room').innerHTML;
           socket.emit('entry message', {'message': message,'name':name, 'rooma':rooma});
         });
+
+          //should emit a "submit message" event on hitting enter
+          var input = document.querySelector('#task1');
+          input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+               event.preventDefault();
+               name = localStorage.getItem('name');
+               const message = document.querySelector('#task1').value;           
+               const rooma = document.querySelector('#room').innerHTML;
+               document.querySelector('#task1').value="";
+               socket.emit('submit message', {'message': message,'name':name, 'rooma':rooma});
+            }
+          });
       
-        //should emit a "submit message" event
+        //should emit a "submit message" event on click
         document.querySelector('#send').onclick = () => {
             name = localStorage.getItem('name');
             const message = document.querySelector('#task1').value;           
