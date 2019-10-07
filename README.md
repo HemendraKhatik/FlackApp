@@ -25,10 +25,30 @@ This is an anonymous chat application in which you can create new rooms and can 
 
 ## How to contribute
  1. Make a Fork
- 2. Create a new branch (It's necessary)
- 3. Make changes
- 4. Make PR
- 5. Commits should be descriptive 
+ 2. Clone the repository to your local desktop
+ * Open Git Bash On your local machine where you want to create this repository, To paste in Git Bash use Ctrl+Insert
+ ```
+ git clone paste_link_you_copied
+ ```
+ 3. Create a new branch (It's necessary)
+ ```
+ git checkout -b branchName
+ ```
+ 4. Make changes and Add to Staging here
+ ```
+ git add .
+ ```
+ 5. Commit changes
+ ```
+ git commit -m "Message you want to write"
+ ```
+ * Always write the message short and easy to understand (ideally 3 to 5 words)
+ 6. Push the changes so that Pull request will be generated
+ ```
+ git push -u origin branchName
+ ```
+ 7. Make PR
+ 8. **Commits should be descriptive**
 
 ## Where to contribute
  1. UX/UI
