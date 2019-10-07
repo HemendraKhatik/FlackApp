@@ -71,6 +71,8 @@ export DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87
  ```
  7. Make PR
  8. Commits should be descriptive
+ 9. Try to minimize conflicts
+ 10. Follow these steps only after you have Git installed in your system
 
 ## Where to contribute
  1. UX/UI
@@ -88,4 +90,6 @@ export DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87
 ## About Me:
 
 [Click Here](https://hemendrakhatik.github.io/Portfolio/) to know about me.
+
+
 
