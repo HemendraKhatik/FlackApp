@@ -49,6 +49,8 @@ This is an anonymous chat application in which you can create new rooms and can 
  ```
  7. Make PR
  8. **Commits should be descriptive**
+ 9. **Try to minimize conflicts**
+ 10. Follow these steps only after you have Git installed in your system
 
 ## Where to contribute
  1. UX/UI
@@ -66,4 +68,6 @@ This is an anonymous chat application in which you can create new rooms and can 
 ## About Me:
 
 [Click Here](https://hemendrakhatik.github.io/Portfolio/) to know about me.
+
+
 
