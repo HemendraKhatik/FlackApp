@@ -48,8 +48,8 @@ This is an anonymous chat application in which you can create new rooms and can 
  git push -u origin branchName
  ```
  7. Make PR
- 8. **Commits should be descriptive**
- 9. **Try to minimize conflicts**
+ 8. Commits should be descriptive
+ 9. Try to minimize conflicts
  10. Follow these steps only after you have Git installed in your system
 
 ## Where to contribute
