@@ -23,10 +23,32 @@ This is an anonymous chat application in which you can create new rooms and can 
 ## Flack Live
 ### [Click here]( https://flack-web-app.herokuapp.com/) 
 
+## Run this project on your local machine
+
+1. Clone the repository to your local desktop
+ ```
+ git clone paste_link_you_copied
+ ```
+ 2. Change the directory 
+ ```
+cd FlackApp
+ ```
+ 3. Install requirements.txt
+ ```
+ pip install -r requirements.txt 
+ ```
+4. Set environment variables in your shell
+```
+export FLASK_APP=application.py
+export DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87cd76999ccb90c8c99a0ec982f3267de@ec2-23-21-130-182.compute-1.amazonaws.com:5432/da71gb54aqbou7"
+ ```
+ 5. Run application
+ ```
+ flask run
+ ```
 ## How to contribute
  1. Make a Fork
  2. Clone the repository to your local desktop
- * Open Git Bash On your local machine where you want to create this repository, To paste in Git Bash use Shift+Insert
  ```
  git clone paste_link_you_copied
  ```
