@@ -26,7 +26,7 @@ This is an anonymous chat application in which you can create new rooms and can 
 ## How to contribute
  1. Make a Fork
  2. Clone the repository to your local desktop
- * Open Git Bash On your local machine where you want to create this repository, To paste in Git Bash use Ctrl+Insert
+ * Open Git Bash On your local machine where you want to create this repository, To paste in Git Bash use Shift+Insert
  ```
  git clone paste_link_you_copied
  ```
