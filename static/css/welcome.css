@@ -233,8 +233,7 @@
   outline: none;
   color:#fff;
   background-color:#03a9f4;
-  padding:10px 20px;  
-  margin-left:240px;
+  padding:10px 20px;
   border-radius: 10px;
 }
 .pointer{
@@ -260,5 +259,12 @@
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #03a9f4; 
+  background: #03a9f4;
+}
+
+/* For tablets */
+@media only screen and (max-width: 600px) {
+  .box {
+    width: 90%;
+  }
 }
