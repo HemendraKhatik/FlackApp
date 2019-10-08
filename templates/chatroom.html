@@ -1,148 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css') }}">
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">  
-  <!-- fonts -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-  <!-- for animation -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
-   <!-- jQuery library -->
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-<title>Home</title>
-</head>
-  <body>
+{% extends "base.html" %}
+{% block body %}
     <div class="container-fluid">
-      <div class="row">
-        <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-          <div class="container">
-            <a class="navbar-brand" id="logo" href="#">Flack</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-              <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Home
-                    <span class="sr-only">(current)</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Contact</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Settings</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </div>
-      <div class="row pt-5 bg-color bg-size">
-        <div class="col-md-1"><!-- Hidden div --></div>
-         <div class="col-md-4">
-           <div class="setName mt-3 mb-3">
-             <!-- Setting Anonnymous Name -->
-             <div class="Anonymous_name_input">
-                  <h2>Set Your Anonymous Name</h2>
-                  <input type="text" id="name" value="Hello, {{ user_name }}!"  required="">
-                  <center>
-                    <input class="pointer btn btn-primary" id="nama" type="submit" onclick="setName()" value="Set">
-                  </center>
-                  <center><span id="userOnline"></span></center>
-              </div>
-           </div>
-           <div class="setRoom">
-            <!-- Showing all rooms -->
-            <div class="container">
-              <div class="row p-3">
-                <div class="col-md-6">
-                  <p onclick="on()" class="pointer">+ Create room</p>
-                </div>
-                <div id="overlay">
-                  <div id="createRoom">
-                    <h3>Create room</h3>
-                  <form action="{{ url_for('channel_creation') }}" method="POST">
-                    <div class="form-group">
-                      <label for="recipient-name" class="col-form-label">Channel name</label>
-                      <input type="text" name="channel" class="form-control" id="recipient-name" required>
+        <div class="row">
+            <!-- Navigation -->
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+                <div class="container">
+                    <a class="navbar-brand" id="logo" href="#">Flack</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarResponsive">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Home
+                                    <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Settings</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="form-group">
-                      <label for="message-text" class="col-form-label">Description</label>
-                      <textarea class="form-control" name="description" id="message-text" required></textarea>
+                </div>
+            </nav>
+        </div>
+        <div class="row pt-5 bg-color bg-size">
+            <div class="col-md-1"><!-- Hidden div --></div>
+            <div class="col-md-4">
+                <div class="setName mt-3 mb-3">
+                    <!-- Setting Anonnymous Name -->
+                    <div class="Anonymous_name_input">
+                        <h2>Set Your Anonymous Name</h2>
+                        <input type="text" id="name" value="Hello, {{ user_name }}!" required="">
+                        <center>
+                            <input class="pointer btn btn-primary" id="nama" type="submit" onclick="setName()"
+                                   value="Set">
+                        </center>
+                        <center><span id="userOnline"></span></center>
                     </div>
-                    <!-- Sending hidden parameter so that we can know that which channel is belongs to which user -->
-                    <input type="hidden" name="u_id" value="{{ user_id }}">
-                    <button onclick="off()" type="submit" class="btn btn-primary m-2 float-right">Create</button>
-                  </form>
-                    <button onclick="off()" class="btn btn-primary m-2 float-right">close</button>
-                  </div>
                 </div>
-                <script>
-               
-                </script>
-                <div class="col-md-6">
-                  <!-- <p class="pointer">+ Join room</p> -->
+                <div class="setRoom">
+                    <!-- Showing all rooms -->
+                    <div class="container">
+                        <div class="row p-3">
+                            <div class="col-md-6">
+                                <p onclick="on()" class="pointer">+ Create room</p>
+                            </div>
+                            <div id="overlay">
+                                <div id="createRoom">
+                                    <h3>Create room</h3>
+                                    <form action="{{ url_for('channel_creation') }}" method="POST">
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Channel name</label>
+                                            <input type="text" name="channel" class="form-control" id="recipient-name"
+                                                   required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">Description</label>
+                                            <textarea class="form-control" name="description" id="message-text"
+                                                      required></textarea>
+                                        </div>
+                                        <!-- Sending hidden parameter so that we can know that which channel is belongs to which user -->
+                                        <input type="hidden" name="u_id" value="{{ user_id }}">
+                                        <button onclick="off()" type="submit" class="btn btn-primary m-2 float-right">
+                                            Create
+                                        </button>
+                                    </form>
+                                    <button onclick="off()" class="btn btn-primary m-2 float-right">close</button>
+                                </div>
+                            </div>
+                            <script>
+
+                            </script>
+                            <div class="col-md-6">
+                                <!-- <p class="pointer">+ Join room</p> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Rooms</h2>
+                    <ul>
+                        {% for channel in channels %}
+                            <li><i class="far fa-comments"></i>
+                                <a href="{{ url_for('channel', channel_id=channel.id) }}">
+                                    <span>{{ channel.channel }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
-              </div> 
             </div>
-  
-              <h2>Rooms</h2> 
-             <ul>
-              {% for channel in channels %}
-                 <li><i class="far fa-comments"></i> 
-                  <a href="{{ url_for('channel', channel_id=channel.id) }}">
-                  <span>{{ channel.channel }}</span>
-                  </a>
-                 </li>
-               {% endfor %}
-              </ul>
-           </div>
-         </div>
-         <div class="col-md-6 chatBox mt-3">
-           <div class="row">
-            <div class="chatBoxHeader pt-2">
-              <center><h5 class="font_style">Connected to <span id="room">{{ flack }}{{ channel_name }}</span> room</h5></center>
-             </div>
-             <div style="color: black;" class="chatBoxBody p-4" id="message">
-               <!-- Messages will appear here-->
-               <div id="pop" class="p-4 text-center animated bounceIn delay-1s">
-                 <h4>Enter in {{ flack }}{{ channel_name }}</h4>
-                 <p>{{ channel_decription }}</p>
-                 <button id="enter" class="btn btn-secondary">Enter</button>
-               </div>
-             </div>
-             <div class="chatBoxFooter">
-               <!-- Message sending bar -->
-               <input type="text" id="task1" placeholder="Send Message..."/>
-               <button class="pointer" type="submit" id="send" disabled>
-                <i class="far fa-paper-plane"></i>
-              </button>
-             </div>
-           </div>
-         </div>
-         <div class="col-md-1"><!-- Hidden div --></div>
-      </div>
+            <div class="col-md-6 chatBox mt-3">
+                <div class="row">
+                    <div class="chatBoxHeader pt-2">
+                        <center><h5 class="font_style">Connected to <span id="room">{{ flack }}{{ channel_name }}</span>
+                            room</h5></center>
+                    </div>
+                    <div style="color: black;" class="chatBoxBody p-4" id="message">
+                        <!-- Messages will appear here-->
+                        <div id="pop" class="p-4 text-center animated bounceIn delay-1s">
+                            <h4>Enter in {{ flack }}{{ channel_name }}</h4>
+                            <p>{{ channel_decription }}</p>
+                            <button id="enter" class="btn btn-secondary">Enter</button>
+                        </div>
+                    </div>
+                    <div class="chatBoxFooter">
+                        <!-- Message sending bar -->
+                        <input type="text" id="task1" placeholder="Send Message..."/>
+                        <button class="pointer" type="submit" id="send" disabled>
+                            <i class="far fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1"><!-- Hidden div --></div>
+        </div>
     </div>
-    <!-- Latest compiled JavaScript -->
-    
+{% endblock %}
+{% block scripts %}
     <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <!-- Popper JS -->
-    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-  </body>
-</html>
+{% endblock %}
