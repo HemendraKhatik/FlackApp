@@ -25,8 +25,6 @@ Session(app)
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
-# global engine
-# global db
 
 def setup_database():
 	global engine
@@ -59,7 +57,6 @@ def welcome():
 def signup():
 	# In idle database loses its connection and should has been refreshed
 	setup_database()
-
 	if request.method=="GET":
 		return render_template('signup.html')
 	username=request.form.get("username")
