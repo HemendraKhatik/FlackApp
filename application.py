@@ -67,6 +67,7 @@ def signup():
 	username=request.form.get("username")
 	email=request.form.get("email")
 	if request.form.get("password") == request.form.get("c_password"):
+		# encrypting password once the user signs up.
 		password=psw_hasher.hexdigest(request.form.get("password"))
 	else:
 		flash('Password does not match')
@@ -85,6 +86,8 @@ def login():
 	#This route will only accept the POST request
 	if request.method == "POST":
 		username=request.form.get("username")
+		# For now, the plain text is gonna be encrypted easily; the better way is considering encryption
+		# from the begining overall sessions, requests, even Ajax requests, etc.
 		password=psw_hasher.hexdigest(request.form.get("password"))
 		query=db.execute("SELECT * FROM user_signup_data WHERE username=:username AND password=:password",
 		{"username":username,"password":password}).fetchall()
