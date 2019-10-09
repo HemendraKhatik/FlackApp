@@ -49,6 +49,13 @@
   color: #000000;
   background-color: #93aac1;
 }
+
+.chatBoxBody p {
+  background-color: white;
+  padding: 10px;
+  border-radius: 20px;
+}
+ 
 #pop{
   height:400px;
   width:80%;
