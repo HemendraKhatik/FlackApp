@@ -66,17 +66,24 @@ def signup():
 		return render_template('signup.html')
 	username=request.form.get("username")
 	email=request.form.get("email")
+	#Checking email 
+	check_email=db.execute("SELECT * FROM user_signup_data WHERE email=:email",
+		{"email":email}).fetchall()
+	if check_email:
+		flash(check_email + " Already taken")
+		return redirect(request.url)
+	
 	if request.form.get("password") == request.form.get("c_password"):
 		# encrypting password once the user signs up.
 		password=psw_hasher.hexdigest(request.form.get("password"))
+		db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
+		{"username":username,"email":email,"password":password})
+		print("New user: \'%s\' with password \'%s\' inserted into database" % (username, password))
+		db.commit()
+		db.close()
 	else:
-		flash('Password does not match')
-		return redirect(url_for('index'))
-	db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
-	{"username":username,"email":email,"password":password})
-	print("New user: \'%s\' with password \'%s\' inserted into database" % (username, password))
-	db.commit()
-	db.close()
+	     flash('Password does not match')
+	     return redirect(url_for('index'))
 	return render_template('login.html')
 
 @app.route("/login",methods=["POST","GET"])
