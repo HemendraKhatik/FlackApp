@@ -262,6 +262,15 @@
   background: #03a9f4;
 }
 
+.create-room {
+  text-align: center;
+  background: #03a9f4;
+  padding: 10px;
+  width: 50%;
+  margin: auto;
+  border-radius: 10px;
+  text-transform: capitalize;
+}
 /* For tablets */
 @media only screen and (max-width: 600px) {
   .box {
