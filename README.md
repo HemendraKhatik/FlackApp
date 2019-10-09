@@ -9,7 +9,7 @@ This is an anonymous chat application in which you can create new rooms and can 
 ## Uniqueness About this project
 * Flack does not store user chat in Flack's server.
 * It hides the user's identity from other users
-
+* Passwords are encrypted
 
 ## Technology stack used in this project
 * Python
