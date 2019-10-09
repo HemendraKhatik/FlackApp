@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_socketio import SocketIO, emit ,join_room, send
 from functools import wraps # for security purpose
+from encryption import *
 
 app = Flask(__name__)
 DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87cd76999ccb90c8c99a0ec982f3267de@ec2-23-21-130-182.compute-1.amazonaws.com:5432/da71gb54aqbou7"
@@ -24,6 +25,23 @@ Session(app)
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
+# global engine
+# global db
+
+def setup_database():
+	global engine
+	global db
+	if engine == None:
+		engine = create_engine(os.getenv("DATABASE_URL"))
+	if db == None:
+		db = scoped_session(sessionmaker(bind=engine))
+setup_database()
+
+
+# Instantiating encryption util
+psw_hasher = HashTable('md5')
+msg_hasher = HashTable('sha1')
+
 
 @app.route("/index")
 def index():
@@ -41,27 +59,36 @@ def welcome():
 
 @app.route("/signup",methods=["POST","GET"])
 def signup():
+	# In idle database loses its connection and should has been refreshed
+	setup_database()
+
 	if request.method=="GET":
 		return render_template('signup.html')
 	username=request.form.get("username")
 	email=request.form.get("email")
 	if request.form.get("password") == request.form.get("c_password"):
-		password=request.form.get("password")
+		# encrypting password once the user signs up.
+		password=psw_hasher.hexdigest(request.form.get("password"))
 	else:
 		flash('Password does not match')
 		return redirect(url_for('index'))
 	db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
 	{"username":username,"email":email,"password":password})
+	print("New user: \'%s\' with password \'%s\' inserted into database" % (username, password))
 	db.commit()
 	db.close()
 	return render_template('login.html')
 
 @app.route("/login",methods=["POST","GET"])
 def login():
+	# In idle database loses its connection and should has been refreshed
+	setup_database()
 	#This route will only accept the POST request
 	if request.method == "POST":
 		username=request.form.get("username")
-		password=request.form.get("password")
+		# For now, the plain text is gonna be encrypted easily; the better way is considering encryption
+		# from the begining overall sessions, requests, even Ajax requests, etc.
+		password=psw_hasher.hexdigest(request.form.get("password"))
 		query=db.execute("SELECT * FROM user_signup_data WHERE username=:username AND password=:password",
 		{"username":username,"password":password}).fetchall()
 		"""Lists all channels."""
@@ -73,7 +100,7 @@ def login():
 				session['username'] = q.username
 				session['user_id'] = q.id
 				return redirect(url_for('home'))
-	if request.method == "GET":
+	elif request.method == "GET":
 		if 'logged_in' in session:
 			redirect(url_for('home'))
 	return redirect(url_for('index'))
@@ -84,8 +111,10 @@ def logout():
 	return redirect(url_for('index'))
 
 @app.route("/home",methods=["POST","GET"]) 
-def home():
+def home():	
 	if request.method == "POST":
+		# In idle database loses its connection and should has been refreshed
+		setup_database()
 		channels = db.execute("SELECT * FROM user_channel").fetchall()
 		return render_template("chatroom.html",user_id=session['user_id'],user_name=session['username'],channels=channels)
 	else:
@@ -113,6 +142,9 @@ def channel_creation():
 	channel=request.form.get("channel")
 	description=request.form.get("description")
 	u_id=request.form.get("u_id")
+
+	# In idle database loses its connection and should has been refreshed
+	setup_database()
 	db.execute("INSERT INTO user_channel(channel,description,u_id) VALUES(:channel,:description,:u_id)",
 	{"channel":channel,"description":description,"u_id":u_id})
 	db.commit()
@@ -124,6 +156,8 @@ def channel_creation():
 def channels():
 	"""Lists all channels."""
 	global channels
+	# In idle database loses its connection and should has been refreshed
+	setup_database()
 	channels = db.execute("SELECT * FROM user_channel").fetchall()
 	flack="Flack"
 	channel_decription ="This room is flack official public room"
@@ -132,6 +166,8 @@ def channels():
 @app.route("/channels/<int:channel_id>")
 @login_required
 def channel(channel_id):
+	# In idle database loses its connection and should has been refreshed
+	setup_database()
 	# Make sure channel exists.
 	channel = db.execute("SELECT * FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone()
 	if channel is None:
