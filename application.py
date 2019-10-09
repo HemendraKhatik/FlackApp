@@ -25,8 +25,6 @@ Session(app)
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
-# global engine
-# global db
 
 def setup_database():
 	global engine
@@ -37,11 +35,9 @@ def setup_database():
 		db = scoped_session(sessionmaker(bind=engine))
 setup_database()
 
-
 # Instantiating encryption util
 psw_hasher = HashTable('md5')
 msg_hasher = HashTable('sha1')
-
 
 @app.route("/index")
 def index():
@@ -61,7 +57,6 @@ def welcome():
 def signup():
 	# In idle database loses its connection and should has been refreshed
 	setup_database()
-
 	if request.method=="GET":
 		return render_template('signup.html')
 	username=request.form.get("username")
@@ -142,7 +137,6 @@ def channel_creation():
 	channel=request.form.get("channel")
 	description=request.form.get("description")
 	u_id=request.form.get("u_id")
-
 	# In idle database loses its connection and should has been refreshed
 	setup_database()
 	db.execute("INSERT INTO user_channel(channel,description,u_id) VALUES(:channel,:description,:u_id)",
