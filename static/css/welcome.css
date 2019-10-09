@@ -148,7 +148,7 @@
   padding-left:10px;
   padding-right:10px;
   padding-bottom:10px;
-  width:60%;
+  width:500px;
   height:auto;
   position: absolute;
   top: 50%;
@@ -266,5 +266,9 @@
 @media only screen and (max-width: 600px) {
   .box {
     width: 90%;
+  }
+
+ #createRoom{
+    width: 80%;
   }
 }
