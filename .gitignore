@@ -4,6 +4,7 @@
 /__pycache__/
 /flask_session/
 .env
+/venv/
 
 ######################
 # Node

@@ -89,6 +89,10 @@ def login():
 		# For now, the plain text is gonna be encrypted easily; the better way is considering encryption
 		# from the begining overall sessions, requests, even Ajax requests, etc.
 		password=psw_hasher.hexdigest(request.form.get("password"))
+		user_exists = db.execute("SELECT username from user_signup_data WHERE username=:username", {"username": username}).fetchall()
+		if len(user_exists) == 0:
+			flash('Account does not exist')
+			return redirect(url_for('index'))
 		query=db.execute("SELECT * FROM user_signup_data WHERE username=:username AND password=:password",
 		{"username":username,"password":password}).fetchall()
 		"""Lists all channels."""
@@ -100,6 +104,7 @@ def login():
 				session['username'] = q.username
 				session['user_id'] = q.id
 				return redirect(url_for('home'))
+		flash("Invalid email or password")
 	elif request.method == "GET":
 		if 'logged_in' in session:
 			redirect(url_for('home'))
