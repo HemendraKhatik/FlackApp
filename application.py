@@ -101,7 +101,7 @@ def login():
                 session['username'] = q.username
                 session['user_id'] = q.id
                 return redirect(url_for('home'))
-        flash("Invalid email or password")
+        flash("Invalid password")
     elif request.method == "GET":
         if 'logged_in' in session:
             redirect(url_for('home'))
