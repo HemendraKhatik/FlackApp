@@ -25,6 +25,17 @@
               <div class="box">
                   <h2>Login</h2>
                   <form action="{{ url_for('login') }}" method="POST">
+                      <div>
+                          {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                              <div class="flashes">
+                                {% for message in messages %}
+                                  <p style="text-align: center; color: red">{{ message }}</p>
+                                {% endfor %}
+                              </div>
+                              {% endif %}
+                            {% endwith %}
+                        </div>
                       <div class="inputBox">
                           <input id="username-input" type="text" name="username" autocomplete="off" required="">
                           <label id="username-label" for="username" class="fas fa-envelope input-icon"> Username</label>
@@ -32,7 +43,7 @@
                       <div class="inputBox">
                           <input id="password-input" type="password" name="password" autocomplete="off" required="">
                           <label id="password-label" for="password" class="fas fa-lock input-icon"> Password</label>
-                      </div>
+                      </div> 
                       <div class="d-flex justify-content-end">
                         <input type="submit" name="" value="Login">
                       </div>
