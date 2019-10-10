@@ -25,6 +25,13 @@
               <div class="box">
                   <h2>Login</h2>
                   <form action="{{ url_for('login') }}" method="POST">
+                           {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
                       <div class="inputBox">
                           <input id="username-input" type="text" name="username" autocomplete="off" required="">
                           <label id="username-label" for="username" class="fas fa-envelope input-icon"> Username</label>
@@ -43,7 +50,6 @@
           </div>
         </div>
       </div>
-    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
