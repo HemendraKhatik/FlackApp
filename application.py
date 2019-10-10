@@ -26,10 +26,6 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
-
-# global engine
-# global db
-
 def setup_database():
     global engine
     global db
@@ -37,14 +33,12 @@ def setup_database():
         engine = create_engine(os.getenv("DATABASE_URL"))
     if db == None:
         db = scoped_session(sessionmaker(bind=engine))
-
-
+        
 setup_database()
 
 # Instantiating encryption util
 psw_hasher = HashTable('md5')
 msg_hasher = HashTable('sha1')
-
 
 @app.route("/index")
 def index():
@@ -53,7 +47,6 @@ def index():
             return redirect(url_for('home'))
     return render_template("login.html")
 
-
 @app.route("/")
 def welcome():
     if request.method == "GET":
@@ -61,12 +54,10 @@ def welcome():
             return redirect(url_for('home'))
     return render_template("login.html")
 
-
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
     # In idle database loses its connection and should has been refreshed
     setup_database()
-
     if request.method == "GET":
         return render_template('signup.html')
     username = request.form.get("username")
@@ -83,7 +74,6 @@ def signup():
     db.commit()
     db.close()
     return render_template('login.html')
-
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -117,12 +107,10 @@ def login():
             redirect(url_for('home'))
     return redirect(url_for('index'))
 
-
 @app.route("/logout")
 def logout():
     session.pop('logged_in', None)
     return redirect(url_for('index'))
-
 
 @app.route("/home", methods=["POST", "GET"])
 def home():
@@ -140,10 +128,7 @@ def home():
             flash('Need to login')
             return redirect(url_for('index'))
 
-
 """Securing direct get methods"""
-
-
 def login_required(test):
     @wraps(test)
     def wrap(*args, **kwargs):
@@ -152,9 +137,7 @@ def login_required(test):
         else:
             flash('you need to login first')
             return redirect(url_for('index'))
-
     return wrap
-
 
 @app.route("/channel_creation", methods=["POST"])
 @login_required
@@ -162,7 +145,6 @@ def channel_creation():
     channel = request.form.get("channel")
     description = request.form.get("description")
     u_id = request.form.get("u_id")
-
     # In idle database loses its connection and should has been refreshed
     setup_database()
     db.execute("INSERT INTO user_channel(channel,description,u_id) VALUES(:channel,:description,:u_id)",
@@ -170,7 +152,6 @@ def channel_creation():
     db.commit()
     db.close()
     return redirect(url_for('channels'))
-
 
 @app.route("/channels")
 @login_required
@@ -184,7 +165,6 @@ def channels():
     channel_decription = "This room is flack official public room"
     return render_template("chatroom.html", flack=flack, user_id=session['user_id'], user_name=session['username'],
                            channels=channels, channel_decription=channel_decription)
-
 
 @app.route("/channels/<int:channel_id>")
 @login_required
@@ -203,7 +183,6 @@ def channel(channel_id):
     return render_template("chatroom.html", user_id=session['user_id'], user_name=session['username'],
                            channel_name=channel_name, channels=channels, channel_decription=channel_decription)
 
-
 @socketio.on("entry message")
 def message(data):
     message = data['message']
@@ -215,7 +194,6 @@ def message(data):
     join_room(room)
     emit("announce message", {"message": message, "name": name, "time": time}, room=room, broadcast=True)
 
-
 @socketio.on("submit message")
 def message(data):
     message = data['message']
@@ -226,7 +204,6 @@ def message(data):
     time = now.strftime("%I:%M:%S")
     join_room(room)
     emit("announce message", {"message": message, "name": name, "time": time}, room=room, broadcast=True)
-
 
 if __name__ == '__main__':
     socketio.run(app)
