@@ -188,22 +188,20 @@ def message(data):
     message = data['message']
     name = data['name']
     room = data['rooma']
-    from datetime import datetime
-    now = datetime.now()
-    time = now.strftime("%I:%M:%S")
+    import time
+    message_time = int(round(time.time() * 1000))
     join_room(room)
-    emit("announce message", {"message": message, "name": name, "time": time}, room=room, broadcast=True)
+    emit("announce message", {"message": message, "name": name, "time":  message_time}, room=room, broadcast=True)
 
 @socketio.on("submit message")
 def message(data):
     message = data['message']
     name = data['name']
     room = data['rooma']
-    from datetime import datetime
-    now = datetime.now()
-    time = now.strftime("%I:%M:%S")
+    import time
+    message_time = int(round(time.time() * 1000))
     join_room(room)
-    emit("announce message", {"message": message, "name": name, "time": time}, room=room, broadcast=True)
+    emit("announce message", {"message": message, "name": name, "time": message_time}, room=room, broadcast=True)
 
 if __name__ == '__main__':
     socketio.run(app)
