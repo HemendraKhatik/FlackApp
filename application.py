@@ -62,15 +62,22 @@ def signup():
         return render_template('signup.html')
     username = request.form.get("username")
     email = request.form.get("email")
+    # Email validation
+    check_email = db.execute("SELECT * FROM user_signup_data WHERE email:email",
+                           {"email": email).fetchall()
+    if check_email:
+        flash('Email Already exist.')
+        return redirect(request.url)
+    # password validation                        
     if request.form.get("password") == request.form.get("c_password"):
         # encrypting password once the user signs up.
         password = psw_hasher.hexdigest(request.form.get("password"))
     else:
         flash('Password does not match')
-        return redirect(url_for('index'))
+        return redirect(request.url)
     db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
                {"username": username, "email": email, "password": password})
-    print("New user: \'%s\' with password \'%s\' inserted into database" % (username, password))
+    # print("New user: \'%s\' with password \'%s\' inserted into database" % (username, password))
     db.commit()
     db.close()
     return render_template('login.html')
