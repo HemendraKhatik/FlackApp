@@ -70,7 +70,6 @@ def signup():
         return redirect(url_for('index'))
     db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
                {"username": username, "email": email, "password": password})
-    print("New user: \'%s\' with password \'%s\' inserted into database" % (username, password))
     db.commit()
     db.close()
     return render_template('login.html')
