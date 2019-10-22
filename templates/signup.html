@@ -5,6 +5,13 @@
             <div class="box">
                 <h2>Sign Up</h2>
                 <form action="{{ url_for('signup') }}" method="POST">
+                    {% with messages = get_flashed_messages() %}
+                       {% if messages %}
+                          {% for message in messages %}
+                            <div class="alert alert-danger" role="alert">{{ message }}</div>
+                          {% endfor %}
+                       {% endif %}
+                    {% endwith %}
                     <div class="inputBox">
                         <input type="text" name="username" autocomplete="off" required="">
                         <label for="stuff" class="fas fa-user input-icon"> Username</label>
