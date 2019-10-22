@@ -10,6 +10,13 @@
             <div class="col-md-6 animated bounceIn delay-1s">
                 <div class="box">
                     <h2>Login</h2>
+                    {% with messages = get_flashed_messages() %}
+                       {% if messages %}
+                          {% for message in messages %}
+                            <div class="alert alert-danger" role="alert">{{ message }}</div>
+                          {% endfor %}
+                       {% endif %}
+                    {% endwith %}
                     <form action="{{ url_for('login') }}" method="POST">
                         <div class="inputBox">
                             <input type="text" name="username" autocomplete="off" required="">
