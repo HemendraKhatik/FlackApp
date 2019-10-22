@@ -1,4 +1,6 @@
 import os
+import re
+
 from flask import Flask, session, render_template, request, url_for, redirect, flash, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
@@ -26,6 +28,7 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
+
 def setup_database():
     global engine
     global db
@@ -33,12 +36,14 @@ def setup_database():
         engine = create_engine(os.getenv("DATABASE_URL"))
     if db == None:
         db = scoped_session(sessionmaker(bind=engine))
-        
+
+
 setup_database()
 
 # Instantiating encryption util
 psw_hasher = HashTable('md5')
 msg_hasher = HashTable('sha1')
+
 
 @app.route("/index")
 def index():
@@ -47,6 +52,7 @@ def index():
             return redirect(url_for('home'))
     return render_template("login.html")
 
+
 @app.route("/")
 def welcome():
     if request.method == "GET":
@@ -54,25 +60,66 @@ def welcome():
             return redirect(url_for('home'))
     return render_template("login.html")
 
+
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
     # In idle database loses its connection and should has been refreshed
     setup_database()
     if request.method == "GET":
-        return render_template('signup.html')
+        return render_template('signup.html', error_visibility='none')
     username = request.form.get("username")
+
     email = request.form.get("email")
+    email_error_msg = form_check_email(email)
+    if email_error_msg is not '':
+        flash(email_error_msg, 'error')
+        return render_template('signup.html', error_visibility='block', error_msg=email_error_msg)
+
     if request.form.get("password") == request.form.get("c_password"):
         # encrypting password once the user signs up.
+        password_strength = form_password_strength(request.form.get("password"))
+
         password = psw_hasher.hexdigest(request.form.get("password"))
     else:
-        flash('Password does not match')
-        return redirect(url_for('index'))
+        error_msg = 'Password does not match'
+        return render_template('signup.html', error_visibility='block', error_msg=error_msg)
     db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
                {"username": username, "email": email, "password": password})
     db.commit()
     db.close()
     return render_template('login.html')
+
+
+def form_check_email(email):
+    error_msg = ''
+    user = db.execute("SELECT username FROM user_signup_data WHERE email=:email", {"email": email}).fetchone()
+    if user:
+        error_msg += 'Email already exists!'
+    else:
+        match = re.search(r'[\w.-]+@[\w.-]+.\w+', email)
+        if match is None:
+            error_msg += 'Email not valid!'
+    return error_msg
+
+
+@app.route('/password_strength', methods=['POST'])
+def form_password_strength(password):
+    valid_count = 0
+    if len(password) >= 8:
+        valid_count += 1
+    if re.search(r'[A-Z]+', password):
+        valid_count += 1
+    if re.search(r'[a-z]+', password):
+        valid_count += 1
+    if re.search(r'[$-/:-?{-~!"^_`\[\]]+', password):
+        valid_count += 1
+
+    if valid_count == 4:
+        return "strong password"
+    elif valid_count == 3:
+        return "medium password"
+    return "weak password"
+
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -106,10 +153,12 @@ def login():
             redirect(url_for('home'))
     return redirect(url_for('index'))
 
+
 @app.route("/logout")
 def logout():
     session.pop('logged_in', None)
     return redirect(url_for('index'))
+
 
 @app.route("/home", methods=["POST", "GET"])
 def home():
@@ -127,7 +176,10 @@ def home():
             flash('Need to login')
             return redirect(url_for('index'))
 
+
 """Securing direct get methods"""
+
+
 def login_required(test):
     @wraps(test)
     def wrap(*args, **kwargs):
@@ -136,7 +188,9 @@ def login_required(test):
         else:
             flash('you need to login first')
             return redirect(url_for('index'))
+
     return wrap
+
 
 @app.route("/channel_creation", methods=["POST"])
 @login_required
@@ -152,6 +206,7 @@ def channel_creation():
     db.close()
     return redirect(url_for('channels'))
 
+
 @app.route("/channels")
 @login_required
 def channels():
@@ -164,6 +219,7 @@ def channels():
     channel_decription = "This room is flack official public room"
     return render_template("chatroom.html", flack=flack, user_id=session['user_id'], user_name=session['username'],
                            channels=channels, channel_decription=channel_decription)
+
 
 @app.route("/channels/<int:channel_id>")
 @login_required
@@ -182,6 +238,7 @@ def channel(channel_id):
     return render_template("chatroom.html", user_id=session['user_id'], user_name=session['username'],
                            channel_name=channel_name, channels=channels, channel_decription=channel_decription)
 
+
 @socketio.on("entry message")
 def message(data):
     message = data['message']
@@ -190,7 +247,8 @@ def message(data):
     import time
     message_time = int(round(time.time() * 1000))
     join_room(room)
-    emit("announce message", {"message": message, "name": name, "time":  message_time}, room=room, broadcast=True)
+    emit("announce message", {"message": message, "name": name, "time": message_time}, room=room, broadcast=True)
+
 
 @socketio.on("submit message")
 def message(data):
@@ -202,5 +260,7 @@ def message(data):
     join_room(room)
     emit("announce message", {"message": message, "name": name, "time": message_time}, room=room, broadcast=True)
 
+
 if __name__ == '__main__':
+    # app.debug = True
     socketio.run(app)
