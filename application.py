@@ -81,7 +81,7 @@ def signup():
         if password_strength == "weak password":
             flash(password_strength, 'error')
             return redirect(request.url)
-        else password_strength == "medium password":
+        if password_strength == "medium password":
             flash(password_strength, 'error')
             return redirect(request.url)
         # encrypting password once the user signs up.
