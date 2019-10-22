@@ -78,7 +78,6 @@ def signup():
     if request.form.get("password") == request.form.get("c_password"):
         # encrypting password once the user signs up.
         password_strength = form_password_strength(request.form.get("password"))
-
         password = psw_hasher.hexdigest(request.form.get("password"))
     else:
         error_msg = 'Password does not match'
@@ -87,6 +86,7 @@ def signup():
                {"username": username, "email": email, "password": password})
     db.commit()
     db.close()
+    flash(password_strength, 'error')
     return render_template('login.html')
 
 
@@ -101,8 +101,6 @@ def form_check_email(email):
             error_msg += 'Email not valid!'
     return error_msg
 
-
-@app.route('/password_strength', methods=['POST'])
 def form_password_strength(password):
     valid_count = 0
     if len(password) >= 8:
