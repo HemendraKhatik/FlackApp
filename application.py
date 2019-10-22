@@ -76,17 +76,24 @@ def signup():
         return render_template('signup.html', error_visibility='block', error_msg=email_error_msg)
 
     if request.form.get("password") == request.form.get("c_password"):
-        # encrypting password once the user signs up.
+        # checking password strength 
         password_strength = form_password_strength(request.form.get("password"))
+        if password_strength == "weak password":
+          flash(password_strength, 'error')
+          return redirect(request.url)
+        else password_strength == "medium password":
+          flash(password_strength, 'error')
+          return redirect(request.url)
+        # encrypting password once the user signs up.
         password = psw_hasher.hexdigest(request.form.get("password"))
     else:
         error_msg = 'Password does not match'
-        return render_template('signup.html', error_visibility='block', error_msg=error_msg)
+        flash(error_msg, 'error')
+        return render_template('signup.html', error_visibility='block')
     db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
                {"username": username, "email": email, "password": password})
     db.commit()
     db.close()
-    flash(password_strength, 'error')
     return render_template('login.html')
 
 
