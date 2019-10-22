@@ -79,11 +79,11 @@ def signup():
         # checking password strength 
         password_strength = form_password_strength(request.form.get("password"))
         if password_strength == "weak password":
-          flash(password_strength, 'error')
-          return redirect(request.url)
+            flash(password_strength, 'error')
+            return redirect(request.url)
         else password_strength == "medium password":
-          flash(password_strength, 'error')
-          return redirect(request.url)
+            flash(password_strength, 'error')
+            return redirect(request.url)
         # encrypting password once the user signs up.
         password = psw_hasher.hexdigest(request.form.get("password"))
     else:
@@ -118,7 +118,6 @@ def form_password_strength(password):
         valid_count += 1
     if re.search(r'[$-/:-?{-~!"^_`\[\]]+', password):
         valid_count += 1
-
     if valid_count == 4:
         return "strong password"
     elif valid_count == 3:
