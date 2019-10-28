@@ -9,6 +9,8 @@ from flask_socketio import SocketIO, emit, join_room, send
 from functools import wraps  # for security purpose
 from encryption import *
 
+"""Start of flask app initialization"""
+
 app = Flask(__name__)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -44,6 +46,7 @@ setup_database()
 psw_hasher = HashTable('md5')
 msg_hasher = HashTable('sha1')
 
+"""Route Definitions"""
 
 @app.route("/index")
 def index():
@@ -53,6 +56,7 @@ def index():
     return render_template("login.html")
 
 
+#This is your base route
 @app.route("/")
 def welcome():
     if request.method == "GET":
@@ -76,7 +80,7 @@ def signup():
         return render_template('signup.html', error_visibility='block', error_msg=email_error_msg)
 
     if request.form.get("password") == request.form.get("c_password"):
-        # checking password strength 
+        # checking password strength
         password_strength = form_password_strength(request.form.get("password"))
         if password_strength == "weak password":
             flash(password_strength, 'error')
@@ -132,8 +136,8 @@ def login():
     # This route will only accept the POST request
     if request.method == "POST":
         username = request.form.get("username")
-        # For now, the plain text is gonna be encrypted easily; the better way is considering encryption
-        # from the begining overall sessions, requests, even Ajax requests, etc.
+        # For now, the plain text is going to  be encrypted easily; the better way is considering encryption
+        # from the beginning overall sessions, requests, even Ajax requests, etc.
         password = psw_hasher.hexdigest(request.form.get("password"))
         user_exists = db.execute("SELECT username from user_signup_data WHERE username=:username",
                                  {"username": username}).fetchall()
@@ -202,7 +206,7 @@ def channel_creation():
     channel = request.form.get("channel")
     description = request.form.get("description")
     u_id = request.form.get("u_id")
-    # In idle database loses its connection and should has been refreshed
+    # In idle database loses its connection and should have been refreshed
     setup_database()
     db.execute("INSERT INTO user_channel(channel,description,u_id) VALUES(:channel,:description,:u_id)",
                {"channel": channel, "description": description, "u_id": u_id})
@@ -228,13 +232,13 @@ def channels():
 @app.route("/channels/<int:channel_id>")
 @login_required
 def channel(channel_id):
-    # In idle database loses its connection and should has been refreshed
+    # In idle database loses its connection and should have been refreshed
     setup_database()
     # Make sure channel exists.
     channel = db.execute("SELECT * FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone()
     if channel is None:
         return "No such channel."
-    # I'm using ''.join here because query return a tuple
+    # I'm using ''.join here because query returns a tuple
     channel_name = ''.join(db.execute("SELECT channel FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
     channel_decription = ''.join(
         db.execute("SELECT description FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
