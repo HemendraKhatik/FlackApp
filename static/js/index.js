@@ -54,13 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.emit('submit message', {'message': message,'name':name, 'rooma':rooma});
         };
     // When a new message is announced, add to the paragraph
-    socket.on('announce message', data => { 
+    socket.on('announce message', data => {
         const p = document.createElement('p');
         p.innerHTML = `<b>${data.name}:</b> ${data.message}`;
         document.querySelector('#message').append(p);
         const small = document.createElement('small');
         document.querySelector('#message').append(small);
-        small.innerHTML = `<b>Message Time:</b> ${data.time}`;
+        small.innerHTML = `<b>Message Time:</b> ${new moment(data.time).format("HH:mm:ss")}`;
         const hr = document.createElement('hr');
         document.querySelector('#message').append(hr);
 

@@ -6,12 +6,12 @@
 
 ## About Project:
 This is an anonymous chat application in which you can create new rooms and can join existing rooms and can chat with other people in room.
-## Uniqueness About this project
+## Uniqueness About This Project
 * Flack does not store user chat in Flack's server.
 * It hides the user's identity from other users
+* Passwords are encrypted
 
-
-## Technology stack used in this project
+## Technology Stack Used In This Project
 * Python
 * Flask
 * JavaScript
@@ -23,7 +23,7 @@ This is an anonymous chat application in which you can create new rooms and can 
 ## Flack Live
 ### [Click here]( https://flack-web-app.herokuapp.com/) 
 
-## Run this project on your local machine
+## Run This Project on Your Local Machine
 
 1. Clone the repository to your local desktop
  ```
@@ -47,7 +47,7 @@ export DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87
  flask run
  ```
  
-## How to contribute
+## How to Contribute
  1. Make a Fork.
  2. Clone the repository to your local desktop.
  ```
@@ -75,7 +75,7 @@ export DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87
  9. Try to minimize conflicts.
  10. Follow these steps only after you have Git installed in your system.
 
-## Where to contribute
+## Where to Contribute
  1. UX/UI
   * You can improve the existing User Interface or can introduce a new layout for Flack.
  2. Code reformat
