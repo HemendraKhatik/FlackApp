@@ -10,7 +10,8 @@ param (
 	[Switch] $Help,
 	[Switch] $Install,
 	[Switch] $Run,
-	[Switch] $Test
+	[Switch] $Test,
+	[Switch] $DebugMode
 )
 
 
@@ -18,7 +19,7 @@ param (
 function Set-Environments {
 	if (($DotEnvConfig -NE $null) -AND ($DotEnvConfig.Keys.Length -GT 0)){
 		$DotEnvConfig.Keys | foreach {
-			[Environment]::SetEnvironmentVariable($_,$DotEnvConfig['$_'])
+			[Environment]::SetEnvironmentVariable($_,$DotEnvConfig["$_"])
 		}
 	} elseif (Test-Path $DotEnvFile) {
 		cat $DotEnvFile | foreach {if(![string]::IsNullOrEmpty($_.Trim())){
@@ -116,18 +117,18 @@ function Install-Requirements {
 	param ($PyEXE)
 	try{
 		if($PyEXE -ne $null){
-			iex "$PyEXE -c 'import pip;print(pip3.__version__)'" -OutVariable __version__ > $NOP
+			iex "$PyEXE -c 'import pip;print(pip.__version__)'" -OutVariable __version__ | Out-Null
 			if($__version__ -match "^\d+[\.\d]*$"){
 				iex "pip install -r $RequirementsFile"
 			} else {
 				Write-Output "FindingPIP..."
-				$JFPIP = Start-Job -Name "FindingPIP" -ScriptBlock {NOP}
-				icm -ScriptBlock {Get-PIP -PyEXE $PyEXE} -OutVariable $pip
-				Wait-Job -Job $JFPIP
-				Get-Job | foreach{if($_.Name -eq "FindingPIP"){Remove-Job $_}}
+				$JFPIP = Start-Job -Name "FindingPIP" -ScriptBlock {NOP} 
+				icm -ScriptBlock {Get-PIP -PyEXE $PyEXE} -OutVariable pip | Out-Null 
+				Wait-Job -Job $JFPIP | Out-Null
+				Get-Job | foreach{if($_.Name -eq "FindingPIP"){Remove-Job $_}} | Out-Null
 				iex "pip install -r $RequirementsFile"
 			}
-		} else {Write-Output "PyEXE is null!"}
+		} else {Write-Warning "PyEXE is null!"}
 	} catch {<#TO DO #>
 		Write-Debug "Install-Requirements thrown an exception:"
 		Write-Error $Error[0]
@@ -136,11 +137,10 @@ function Install-Requirements {
 
 function Get-PIP {
 	param ($PyEXE)
-	$JFPIP2 = Start-Job -Name "GettingPIP" -ScriptBlock {NOP}
-	iex "$PyEXE -c 'import pip; print(pip4.__spec__.name)'" -OutVariable pip
-	Wait-Job -Job $JFPIP2
-	Get-Job | foreach {if($_.Name -eq "GettingPIP"){Remove-Job $_}}
-	Get-Job
+	Start-Job -Name "GettingPIP" -ScriptBlock {NOP} -OutVariable JFPIP2 | Out-Null
+	iex "$PyEXE -c 'import pip; print(pip.__spec__.name)'" -OutVariable pip | Out-Null
+	Wait-Job -Job $JFPIP2 | Out-Null
+	Get-Job | foreach {if($_.Name -eq "GettingPIP"){Remove-Job $_}} | Out-Null
 	if(-not ($pip -match "pip[3]?")){
 		if(-NOT(Test-Path $env:TEMP)){$env:TEMP="tmp"}
 		try {
@@ -160,8 +160,6 @@ function Run-Test {
 }
 
 <#
-
-		
 		.SYNOPSIS
 		Running Flask Application
 		
@@ -189,6 +187,9 @@ function Run-Test {
 		
 		.PARAMETER Test
 		Test the Flask application by executing `pytest` that is necessary to be listed in requirements file.
+		
+		.PARAMETER DebugMode
+		If the flag shows up in parameter means true and print extra information during installation process.
 
 		.OUTPUTS
 		System.String in seperate line of standard output and System.Process in user kernel to run the application.
@@ -198,8 +199,8 @@ function Run-Test {
 		Print a full list of arguments and examples
 
 		.EXAMPLE
-		C:\FlackApp> .\runapp.ps1 -Install -Run
-		Installing requirements and the run the application
+		C:\FlackApp> .\runapp.ps1 -Install -Run -DebugMode
+		Installing requirements and the run the application with extra informtion most likely such as verbose!
 
 		.EXAMPLE
 		C:\FlackApp> .\runapp.ps1 -DotEnvConfig @{FLASK_APP=application.py;DATABASE_URL=postgres://username:password@host:port/database} -Run
@@ -237,31 +238,33 @@ function Run-FlackApp {
 		[Switch] $Help,
 		[Switch] $Install,
 		[Switch] $Run,
-		[Switch] $Test
+		[Switch] $Test,
+		[Switch] $DebugMode
 	)
 }
 
 function Invoke-All {
 	if($Run -OR $Install -OR $Test){
 		try{
-			Write-Output "Setting Environment Variables ..."
+			if($DebugMode){$DebugPreference = "Continue"}
+			Write-Debug "Setting Environment Variables ..."
 			Set-Environments
-			Write-Output "Looking for a Python executable instance ..."
-			$JFP = Start-Job -Name "FindingPython" -ScriptBlock {NOP}
-			icm -ScriptBlock {Get-PyExecutable} -OutVariable PyEXE
-			Wait-Job -Job $JFP #-Name "FindingPython"
+			Write-Debug "Looking for a Python executable instance ..."
+			Start-Job -Name "FindingPython" -ScriptBlock {NOP} -OutVariable JFP | Out-Null
+			icm -ScriptBlock {Get-PyExecutable} -OutVariable PyEXE | Out-Null
+			Wait-Job -Job $JFP | Out-Null
 			Get-Job | foreach{if($_.Name -eq 'FindingPython'){Remove-Job $_}}
-			Write-Output "Python executable is set to `"$PyEXE`""
+			Write-Warning "Python executable is set to `"$PyEXE`""
 			if ($PyEXE -ne $null){ 
 				if ($Install) {
-					Write-Output "Installing Requirements ..."
+					Write-Debug "Installing Requirements ..."
 					icm -ScriptBlock {Install-Requirements -PyEXE $PyEXE}
 				}
 				if($Run) {
-					Write-Output "Running Flack ..."
+					Write-Debug "Running Flack ..."
 					iex "flask run"
 				} elseif ($Test) {
-					Write-Output "Running pytest ..."
+					Write-Warning "Running pytest ..."
 					Run-Test
 				}
 				

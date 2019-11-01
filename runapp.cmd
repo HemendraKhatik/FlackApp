@@ -29,14 +29,13 @@ FOR /F "usebackq tokens=1,2* delims==" %%i in (`SET`) do (
 )
 SET "__TOGO__=run"
 
-echo %FLASK_APP%
-echo %DATABASE_URL%
+REM echo %FLASK_APP%
+REM echo %DATABASE_URL%
 
 :set_executable
 IF "X%PYTHON_PATH%"=="X" SET "__PYTHON_EXE__=python.EXE"
 IF "X%__FLASK_EXE__%"=="X" SET "__FLASK_EXE__=flask.EXE"
 
-IF "x%1%"=="x" GOTO install
 IF "%1%"=="run" GOTO run
 IF "%1%"=="test" (
 	SET "__TOGO__=test"
@@ -48,7 +47,7 @@ IF "%1%"=="install" (
 )
 IF "x%1%"=="x" GOTO run 
 IF "%1%"=="help" (
-GOTO _help
+CALL _help full
 ) ELSE (
 GOTO _help
 )
@@ -61,7 +60,8 @@ if "%ERRORLEVEL%" NEQ "0" GOTO end
 GOTO end
 
 :test
-ECHO test
+ECHO testing FlackApp
+pytest
 GOTO end
 
 :install
