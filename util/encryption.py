@@ -7,9 +7,7 @@ Comment:	for the future sake of security it's necessary to encrypt all messages 
 			can aware users to make changes and then migrating to proper pool to avoid the disclosure!
 """
 
-# import sys
 import hashlib
-# from functools import wraps
 
 class HashTable(object):
 	"""The HashTable is responsible for hashifying critical data
@@ -24,4 +22,6 @@ class HashTable(object):
 		hasher = getattr(hashlib,self._method)()
 		getattr(hasher,'update')(plain.encode(encoding))
 		return getattr(hasher,'hexdigest')()
+	def equal_hash(self, plain, hashed):
+		return self.hexdigest(plain) == hashed
 

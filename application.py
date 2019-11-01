@@ -7,7 +7,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_socketio import SocketIO, emit, join_room, send
 from functools import wraps  # for security purpose
-from encryption import *
+
+from models.channel import ChannelDAO, Channel
+from models.exceptions import WordSizeException
+from models.user import UserDAO, User
+from util.encryption import *
+from util.form_validation import UserFieldValidation
+
 
 """Start of flask app initialization"""
 
@@ -29,6 +35,10 @@ Session(app)
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
+
+user_dao = UserDAO(db)
+channel_dao = ChannelDAO(db)
+
 
 
 def setup_database():
@@ -80,7 +90,7 @@ def signup():
         return render_template('signup.html', error_visibility='block', error_msg=email_error_msg)
 
     if request.form.get("password") == request.form.get("c_password"):
-        # checking password strength
+        # checking password strength 
         password_strength = form_password_strength(request.form.get("password"))
         if password_strength == "weak password":
             flash(password_strength, 'error')
@@ -88,22 +98,27 @@ def signup():
         if password_strength == "medium password":
             flash(password_strength, 'error')
             return redirect(request.url)
-        # encrypting password once the user signs up.
-        password = psw_hasher.hexdigest(request.form.get("password"))
+        # The password encryption is satisfied once the user signs up in the right way so that user_dao.saveUser
+        # is responsible for encryption. Double encryption is tricky and must be avoided.
+        password = request.form.get("password")
     else:
         error_msg = 'Password does not match'
         flash(error_msg, 'error')
         return render_template('signup.html', error_visibility='block')
-    db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
-               {"username": username, "email": email, "password": password})
-    db.commit()
-    db.close()
+    user = User(username=username, email=email, password=password)
+    # The password will be encrypted here and double encryption must be avoided!
+    user_dao.saveUser(user, encryptPassword=True)
+    # db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
+    #            {"username": username, "email": email, "password": password})
+    # db.commit()
+    # db.close()
     return render_template('login.html')
 
 
 def form_check_email(email):
     error_msg = ''
-    user = db.execute("SELECT username FROM user_signup_data WHERE email=:email", {"email": email}).fetchone()
+    user = user_dao.findUserByEmail(email)
+    # user = db.execute("SELECT username FROM user_signup_data WHERE email=:email", {"email": email}).fetchone()
     if user:
         error_msg += 'Email already exists!'
     else:
@@ -136,35 +151,43 @@ def login():
     # This route will only accept the POST request
     if request.method == "POST":
         username = request.form.get("username")
-        # For now, the plain text is going to  be encrypted easily; the better way is considering encryption
-        # from the beginning overall sessions, requests, even Ajax requests, etc.
+        # For now, the plain text is gonna be encrypted easily; the better way is considering encryption
+        # from the begining overall sessions, requests, even Ajax requests, etc.
         password = psw_hasher.hexdigest(request.form.get("password"))
-        user_exists = db.execute("SELECT username from user_signup_data WHERE username=:username",
-                                 {"username": username}).fetchall()
-        if len(user_exists) == 0:
+        user = None
+        """To ensure that user can log in with either of username and password"""
+        try:
+            if UserFieldValidation().validateEmail(username):
+                user = user_dao.findUserByEmail(username)
+            else:
+                user = user_dao.findUserByUsername(username)
+        except WordSizeException as e:
+            user = user_dao.findUserByUsername(username)
+        # user_exists = db.execute("SELECT username from user_signup_data WHERE username=:username",
+        #                          {"username": username}).fetchall()
+        if user is None:
             flash('Account does not exist')
             return redirect(url_for('index'))
-        query = db.execute("SELECT * FROM user_signup_data WHERE username=:username AND password=:password",
-                           {"username": username, "password": password}).fetchall()
-        """Lists all channels."""
-        channels = db.execute("SELECT * FROM user_channel").fetchall()
-        for q in query:
-            if q.username == username and q.password == password:
-                """Using session here to keep all users sessions separate from each other"""
-                session['logged_in'] = True
-                session['username'] = q.username
-                session['user_id'] = q.id
-                return redirect(url_for('home'))
+        elif password == user.password:
+            """Using session here to keep all users sessions separate from each other"""
+            session['logged_in'] = True
+            session['username'] = user.username
+            session['user_id'] = user.id
+            return redirect(url_for('home'))
         flash("Invalid password")
     elif request.method == "GET":
-        if 'logged_in' in session:
+        """:session still can have ``logged_in`` with the value that is not necessarily True,
+         e.g., False, '' as an empty string, etc., so that checking session to contain a key is not enough!"""
+        if 'logged_in' in session :
             redirect(url_for('home'))
     return redirect(url_for('index'))
 
 
 @app.route("/logout")
 def logout():
-    session.pop('logged_in', None)
+    if 'logged_in' in session:
+        session.pop('logged_in', None)
+        session.clear()
     return redirect(url_for('index'))
 
 
@@ -173,15 +196,17 @@ def home():
     if request.method == "POST":
         # In idle database loses its connection and should has been refreshed
         setup_database()
-        channels = db.execute("SELECT * FROM user_channel").fetchall()
-        return render_template("chatroom.html", user_id=session['user_id'], user_name=session['username'],
-                               channels=channels)
+        channels = channel_dao.findall()
+        # channels = db.execute("SELECT * FROM user_channel").fetchall()
+        return render_template(
+            "chatroom.html", user_id=session['user_id'], user_name=session['username'],channels=channels
+        )
     else:
         if request.method == "GET":
             if 'logged_in' in session:
-                """Need to have some variables to pass"""
+                """Needs to have some variables to pass"""
                 return redirect(url_for('channels'))
-            flash('Need to login')
+            flash('Login is required')
             return redirect(url_for('index'))
 
 
@@ -206,12 +231,11 @@ def channel_creation():
     channel = request.form.get("channel")
     description = request.form.get("description")
     u_id = request.form.get("u_id")
-    # In idle database loses its connection and should have been refreshed
-    setup_database()
-    db.execute("INSERT INTO user_channel(channel,description,u_id) VALUES(:channel,:description,:u_id)",
-               {"channel": channel, "description": description, "u_id": u_id})
-    db.commit()
-    db.close()
+    channel_dao.saveChannel(Channel(channel=channel, description=description, u_id=u_id))
+    # db.execute("INSERT INTO user_channel(channel,description,u_id) VALUES(:channel,:description,:u_id)",
+    #            {"channel": channel, "description": description, "u_id": u_id})
+    # db.commit()
+    # db.close()
     return redirect(url_for('channels'))
 
 
@@ -219,10 +243,8 @@ def channel_creation():
 @login_required
 def channels():
     """Lists all channels."""
-    global channels
-    # In idle database loses its connection and should has been refreshed
-    setup_database()
-    channels = db.execute("SELECT * FROM user_channel").fetchall()
+    channels = channel_dao.findall()
+    # channels = db.execute("SELECT * FROM user_channel").fetchall()
     flack = "Flack"
     channel_decription = "This room is flack official public room"
     return render_template("chatroom.html", flack=flack, user_id=session['user_id'], user_name=session['username'],
@@ -232,17 +254,17 @@ def channels():
 @app.route("/channels/<int:channel_id>")
 @login_required
 def channel(channel_id):
-    # In idle database loses its connection and should have been refreshed
+    # In idle database loses its connection and should has been refreshed
     setup_database()
     # Make sure channel exists.
-    channel = db.execute("SELECT * FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone()
+    channel = channel_dao.findChannelByChannelID(channel_id)
+    # channel = db.execute("SELECT * FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone()
     if channel is None:
         return "No such channel."
-    # I'm using ''.join here because query returns a tuple
-    channel_name = ''.join(db.execute("SELECT channel FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
-    channel_decription = ''.join(
-        db.execute("SELECT description FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone())
-    channels = channels = db.execute("SELECT * FROM user_channel").fetchall()
+    channel_name = channel.channel
+    channel_decription = channel.description
+    channels = channel_dao.findall()
+    # channel = channels = db.execute("SELECT * FROM user_channel").fetchall()
     return render_template("chatroom.html", user_id=session['user_id'], user_name=session['username'],
                            channel_name=channel_name, channels=channels, channel_decription=channel_decription)
 
