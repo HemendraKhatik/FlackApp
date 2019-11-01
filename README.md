@@ -48,6 +48,7 @@ This is an anonymous chat application in which you can create new rooms and can 
     ```
  
 ## How to Contribute
+
 1. Make a Fork.
 2. Clone the repository to your local desktop.
     ```

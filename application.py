@@ -14,6 +14,9 @@ from models.user import UserDAO, User
 from util.encryption import *
 from util.form_validation import UserFieldValidation
 
+
+"""Start of flask app initialization"""
+
 app = Flask(__name__)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -32,8 +35,10 @@ Session(app)
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
+
 user_dao = UserDAO(db)
 channel_dao = ChannelDAO(db)
+
 
 
 def setup_database():
@@ -51,6 +56,7 @@ setup_database()
 psw_hasher = HashTable('md5')
 msg_hasher = HashTable('sha1')
 
+"""Route Definitions"""
 
 @app.route("/index")
 def index():
@@ -60,6 +66,7 @@ def index():
     return render_template("login.html")
 
 
+#This is your base route
 @app.route("/")
 def welcome():
     if request.method == "GET":
