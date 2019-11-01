@@ -7,7 +7,6 @@
 /venv/
 /build/
 /dist/
-runapp.cmd
 
 ######################
 # Node
