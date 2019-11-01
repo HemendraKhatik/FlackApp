@@ -6,4 +6,4 @@ gevent-websocket
 flask_socketio
 psycopg2
 re
-wtforms
+Flask-WTF
