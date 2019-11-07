@@ -7,9 +7,10 @@
 ## About Project:
 This is an anonymous chat application in which you can create new rooms and can join existing rooms and can chat with other people in room.
 ## Uniqueness About This Project
-* Flack does not store user chat in Flack's server.
-* It hides the user's identity from other users
-* Passwords are encrypted
+* Flack does not store user's communications via chatroom in Flack's database server and once a message's delivered it'll be disposed.
+* It let users to choose a nickname due to sake of users' identities.
+- [x] Passwords are encrypted
+- [x] Nicknames reprents users behind their identities.
 
 ## Technology Stack Used In This Project
 * Python
@@ -46,6 +47,16 @@ This is an anonymous chat application in which you can create new rooms and can 
     ```
     flask run
     ```
+
+## An Easy Way To Run Flack
+If you're `MS-Windows` user you may execute the `runapp.cmd` on command-line. Also, `Powershell` terminal lets you execute `runapp.ps1` if you've set the execution policy to be able to run scripts unless open a `Powershell` terminal __as administrator__ and then run the following command:
+
+> Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+
+Congratulations, you can run scripts now. From the application root run `.\runapp.ps1` to get some example as help otherwise execute the following command to run the application:
+
+> .\runapp.ps1 -Install -Run
+
  
 ## How to Contribute
 
