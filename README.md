@@ -7,7 +7,7 @@
 ## About Project:
 This is an anonymous chat application in which you can create new rooms and can join existing rooms and can chat with other people in room.
 ## Uniqueness About This Project
-* Flack does not store user's communications via chatrooms in Flack's database server and once a message's delivered it'll be disposed of, however, it remains in the session untill the user is logged out.
+* Flack does not store user's communications via chatrooms in Flack's database server and once a message's delivered it'll be disposed of, however, it remains in the owner's session untill the owner as user is logged out.
 * It let users choose a nickname due to sake of users' identities.
 - [x] Passwords are encrypted
 - [x] Nicknames represents users behind their identities.
