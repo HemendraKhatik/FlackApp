@@ -5,3 +5,4 @@ gunicorn
 gevent-websocket
 flask_socketio
 psycopg2
+Flask-WTF
