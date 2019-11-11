@@ -45,7 +45,7 @@ IF "%1%"=="install" (
 	SET "__TOGO__=end"
 	GOTO install 
 )
-IF "x%1%"=="x" GOTO run 
+IF "x%1%"=="x" GOTO install 
 IF "%1%"=="help" (
 CALL _help full
 ) ELSE (
@@ -70,7 +70,17 @@ pip install -r requirements.txt
 GOTO %__TOGO__%
 
 :_help
-ECHO HELP
+ECHO runapp.cmd [options]
+ECHO options
+ECHO 	install	Install requirements from requirements.txt
+ECHO 	run	Run the Flack application
+ECHO 	test	Test the Flack application by running pytest
+ECHO 	help	Print these lines.
+ECHO 	If you run the script without option it installs 
+ECHO 	Flack's requirements and then runs the Flack application.
+ECHO 	Example:
+ECHO 	runapp.cmd install
+
 GOTO end
 
 :end
