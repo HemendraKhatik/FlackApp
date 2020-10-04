@@ -29,7 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
           name = localStorage.getItem('name');
           const message ="Entered in room"           
           const rooma = document.querySelector('#room').innerHTML;
-          socket.emit('entry message', {'message': message,'name':name, 'rooma':rooma});
+          const today = new Date();
+          const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+          socket.emit('entry message', {'message': message,'name':name, 'rooma':rooma,"time":time});
         });
 
           //should emit a "submit message" event on hitting enter
@@ -40,8 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
                name = localStorage.getItem('name');
                const message = document.querySelector('#task1').value;           
                const rooma = document.querySelector('#room').innerHTML;
+               const today = new Date();
+               const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
                document.querySelector('#task1').value="";
-               socket.emit('submit message', {'message': message,'name':name, 'rooma':rooma});
+               socket.emit('submit message', {'message': message,'name':name, 'rooma':rooma,"time":time});
             }
           });
       
@@ -50,8 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
             name = localStorage.getItem('name');
             const message = document.querySelector('#task1').value;           
             const rooma = document.querySelector('#room').innerHTML;
+            const today = new Date();
+            const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             document.querySelector('#task1').value="";
-            socket.emit('submit message', {'message': message,'name':name, 'rooma':rooma});
+            socket.emit('submit message', {'message': message,'name':name, 'rooma':rooma,"time":time});
         };
     // When a new message is announced, add to the paragraph
     socket.on('announce message', data => {
@@ -60,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#message').append(p);
         const small = document.createElement('small');
         document.querySelector('#message').append(small);
-        small.innerHTML = `<b>Message Time:</b> ${new moment(data.time).format("HH:mm:ss")}`;
+        small.innerHTML = `<b>Message Time:</b> ${data.time}`;
         const hr = document.createElement('hr');
         document.querySelector('#message').append(hr);
 

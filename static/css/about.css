@@ -76,4 +76,9 @@ p {
   .about_area .about_img {
     display: none;
   }
+
+  h1 {
+    font-size: 60px;
+  }
+
 }

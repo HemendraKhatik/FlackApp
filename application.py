@@ -65,6 +65,9 @@ def index():
             return redirect(url_for('home'))
     return render_template("login.html")
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 #This is your base route
 @app.route("/")
@@ -108,17 +111,12 @@ def signup():
     user = User(username=username, email=email, password=password)
     # The password will be encrypted here and double encryption must be avoided!
     user_dao.saveUser(user, encryptPassword=True)
-    # db.execute("INSERT INTO user_signup_data(username,email,password) VALUES(:username,:email,:password)",
-    #            {"username": username, "email": email, "password": password})
-    # db.commit()
-    # db.close()
     return render_template('login.html')
 
 
 def form_check_email(email):
     error_msg = ''
     user = user_dao.findUserByEmail(email)
-    # user = db.execute("SELECT username FROM user_signup_data WHERE email=:email", {"email": email}).fetchone()
     if user:
         error_msg += 'Email already exists!'
     else:
@@ -163,8 +161,6 @@ def login():
                 user = user_dao.findUserByUsername(username)
         except WordSizeException as e:
             user = user_dao.findUserByUsername(username)
-        # user_exists = db.execute("SELECT username from user_signup_data WHERE username=:username",
-        #                          {"username": username}).fetchall()
         if user is None:
             flash('Account does not exist')
             return redirect(url_for('index'))
@@ -197,7 +193,6 @@ def home():
         # In idle database loses its connection and should has been refreshed
         setup_database()
         channels = channel_dao.findall()
-        # channels = db.execute("SELECT * FROM user_channel").fetchall()
         return render_template(
             "chatroom.html", user_id=session['user_id'], user_name=session['username'],channels=channels
         )
@@ -211,7 +206,6 @@ def home():
 
 
 """Securing direct get methods"""
-
 
 def login_required(test):
     @wraps(test)
@@ -232,10 +226,6 @@ def channel_creation():
     description = request.form.get("description")
     u_id = request.form.get("u_id")
     channel_dao.saveChannel(Channel(channel=channel, description=description, u_id=u_id))
-    # db.execute("INSERT INTO user_channel(channel,description,u_id) VALUES(:channel,:description,:u_id)",
-    #            {"channel": channel, "description": description, "u_id": u_id})
-    # db.commit()
-    # db.close()
     return redirect(url_for('channels'))
 
 
@@ -244,27 +234,32 @@ def channel_creation():
 def channels():
     """Lists all channels."""
     channels = channel_dao.findall()
-    # channels = db.execute("SELECT * FROM user_channel").fetchall()
     flack = "Flack"
     channel_decription = "This room is flack official public room"
     return render_template("chatroom.html", flack=flack, user_id=session['user_id'], user_name=session['username'],
                            channels=channels, channel_decription=channel_decription)
 
+@app.route("/channels/public")
+def public():
+    """Lists all channels."""
+    channels = channel_dao.findall()
+    flack = "Flack"
+    channel_decription = "This room is flack official public room"
+    return render_template("chatroom.html", flack=flack, user_id="guest_id", user_name="guest",
+                           channels=channels, channel_decription=channel_decription)
 
 @app.route("/channels/<int:channel_id>")
-@login_required
+# @login_required
 def channel(channel_id):
     # In idle database loses its connection and should has been refreshed
     setup_database()
     # Make sure channel exists.
     channel = channel_dao.findChannelByChannelID(channel_id)
-    # channel = db.execute("SELECT * FROM user_channel WHERE id = :id", {"id": channel_id}).fetchone()
     if channel is None:
         return "No such channel."
     channel_name = channel.channel
     channel_decription = channel.description
     channels = channel_dao.findall()
-    # channel = channels = db.execute("SELECT * FROM user_channel").fetchall()
     return render_template("chatroom.html", user_id=session['user_id'], user_name=session['username'],
                            channel_name=channel_name, channels=channels, channel_decription=channel_decription)
 
@@ -274,10 +269,9 @@ def message(data):
     message = data['message']
     name = data['name']
     room = data['rooma']
-    import time
-    message_time = int(round(time.time() * 1000))
+    time = data['time']
     join_room(room)
-    emit("announce message", {"message": message, "name": name, "time": message_time}, room=room, broadcast=True)
+    emit("announce message", {"message": message, "name": name, "time": time}, room=room, broadcast=True)
 
 
 @socketio.on("submit message")
@@ -285,12 +279,9 @@ def message(data):
     message = data['message']
     name = data['name']
     room = data['rooma']
-    import time
-    message_time = int(round(time.time() * 1000))
+    time = data['time']
     join_room(room)
-    emit("announce message", {"message": message, "name": name, "time": message_time}, room=room, broadcast=True)
-
+    emit("announce message", {"message": message, "name": name, "time": time}, room=room, broadcast=True)
 
 if __name__ == '__main__':
-    # app.debug = True
     socketio.run(app)
