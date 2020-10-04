@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>About Us</title>
+      <!---------MEGA TAGS--------->
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <!-------------BOOTSTRAP CSS---------->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
+      <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+      <link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet'>
+      <!-------------CSS STYLESHEETS---------->
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/about.css') }}">
+   </head>
+   <body>
+      <h1>About Us</h1>
+      <section class="about_area section_gap">
+         <div class="container">
+            <div class="row justify-content-start align-items-center">
+               <div class="col-lg-5">
+                  <div class="about_img">
+                     <img class="" src="{{ url_for('static', filename='img/about.jpg') }}" alt="">
+                  </div>
+               </div>
+               <div class="offset-lg-1 col-lg-5">
+                  <div class="main_title text-left">
+                     <h2>let’s <br>
+                        Introduce about <br>
+                        our Project
+                     </h2>
+                     <p>
+                        This is an anonymous chat application in which you can create new rooms and can join existing rooms and can chat with other people in room.
+                     </p>
+                     <h5>Uniqueness About This Project</h5>
+                     <p>Flack does not store user's communications via chatrooms in Flack's database server and once a message's delivered it'll be disposed of, however, it remains in the owner's session untill the owner as user is logged out.
+                        It let users choose a nickname due to sake of users' identities.
+                     <ul>
+                        <li>Passwords are encrypted</li>
+                        <li>Nicknames represents users behind their identities.</li>
+                     </ul>
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+   </body>
+</html>
