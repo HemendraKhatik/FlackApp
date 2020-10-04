@@ -6,9 +6,6 @@
   font-family: 'Coiny', cursive;
 }
 
-.bg-color{
-  background-color: #bfd7ff;
-}
 .bg-size{
   height:100vh;
 }
@@ -28,6 +25,15 @@
   background-color: transparent;
   border:none;
   border-bottom: 1px solid black;
+}
+.login-btn{
+  width: 100px;
+  font-size: 15px;
+  color: #fff;
+  outline: none;
+  border:none;
+  background-color:#03a9f4;
+  border-radius: 10px;
 }
 .chatBox{
   height: 88vh;
@@ -117,7 +123,6 @@
   font-size: 15px;
   color: #fff;
   outline: none;
-  background-color: transparent;
   border:none;
   background-color:#03a9f4;
   border-radius: 10px;

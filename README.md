@@ -41,22 +41,12 @@ This is an anonymous chat application in which you can create new rooms and can 
 4. Set environment variables in your shell
     ```
     export FLASK_APP=application.py
-    export DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87cd76999ccb90c8c99a0ec982f3267de@ec2-23-21-130-182.compute-1.amazonaws.com:5432/da71gb54aqbou7"
+    export DATABASE_URL="put your local sqlite db url here after creating db from models"
     ```
 5. Run application
     ```
     flask run
     ```
-
-## An Easy Way To Run Flack
-If you're `MS-Windows` user you may execute the `runapp.cmd` on command-line. Also, `Powershell` terminal lets you execute `runapp.ps1` if you've set the execution policy to be able to run scripts unless open a `Powershell` terminal __as administrator__ and then run the following command:
-
-> Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
-
-Congratulations, you can run scripts now. From the application root run `.\runapp.ps1` to get some example as help otherwise execute the following command to run the application:
-
-> .\runapp.ps1 -Install -Run
-
  
 ## How to Contribute
 
