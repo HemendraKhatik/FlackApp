@@ -5,15 +5,12 @@
 
 
 ## About Project:
-
 This is an anonymous chat application in which you can create new rooms and can join existing rooms and can chat with other people in room.
-
 ## Uniqueness About This Project
 * Flack does not store user's communications via chatrooms in Flack's database server and once a message's delivered it'll be disposed of, however, it remains in the owner's session untill the owner as user is logged out.
 * It let users choose a nickname due to sake of users' identities.
 - [x] Passwords are encrypted
 - [x] Nicknames represents users behind their identities.
-
 
 ## Technology Stack Used In This Project
 * Python
@@ -41,12 +38,15 @@ This is an anonymous chat application in which you can create new rooms and can 
     ```
     pip install -r requirements.txt 
     ```
-4. Set environment variables in your shell
+4. Run the following command to create database locally
+    ```
+    python create.py
+    ```
+5. Set environment variables in your shell
     ```
     export FLASK_APP=application.py
-    export DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87cd76999ccb90c8c99a0ec982f3267de@ec2-23-21-130-182.compute-1.amazonaws.com:5432/da71gb54aqbou7"
-    ```
-5. Run application
+    ```    
+6. Run application
     ```
     flask run
     ```
