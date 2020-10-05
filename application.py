@@ -88,7 +88,7 @@ def signup():
 
     email = request.form.get("email")
     email_error_msg = form_check_email(email)
-    if email_error_msg is not '':
+    if email_error_msg != '':
         flash(email_error_msg, 'error')
         return render_template('signup.html', error_visibility='block', error_msg=email_error_msg)
 
@@ -194,7 +194,7 @@ def home():
         setup_database()
         channels = channel_dao.findall()
         return render_template(
-            "chatroom.html", user_id=session['user_id'], user_name=session['username'],channels=channels
+            "chatroom.html", user_id=session['user_id'], user_name=session['username'], channels=channels
         )
     else:
         if request.method == "GET":
