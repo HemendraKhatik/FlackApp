@@ -44,7 +44,7 @@ This is an anonymous chat application in which you can create new rooms and can 
 4. Set environment variables in your shell
     ```
     export FLASK_APP=application.py
-    export DATABASE_URL="put your local sqlite db url here after creating db from models"
+    export DATABASE_URL="postgres://vfobhheluegnpw:0704135dad9d809b773c6ad4555bfdc87cd76999ccb90c8c99a0ec982f3267de@ec2-23-21-130-182.compute-1.amazonaws.com:5432/da71gb54aqbou7"
     ```
 5. Run application
     ```
