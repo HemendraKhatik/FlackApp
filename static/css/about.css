@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,500|Rubik:500,700");
+body {
+  line-height: 26px;
+  font-size: 15px;
+  font-weight: 400;
+  color: #808080;
+  background-image: url('../img/body-bg.png');
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  color: #19315d;
+}
+
+h1 {
+  font-family: 'Lobster', "Rubik", sans-serif;
+  font-size: 100px;
+  text-align: center;
+  padding-top: 100px;
+}
+
+h2,
+h5 {
+  font-family: 'Lato';
+  font-weight: bold;
+}
+
+p {
+  font-family: 'Muli';
+  font-weight: normal;
+}
+
+.section_gap {
+  padding: 100px 0;
+}
+
+@media (max-width: 1199px) {
+  .section_gap {
+    padding: 80px 0;
+  }
+}
+
+.about_area {
+  position: relative;
+}
+
+.about_area .main_title {
+  margin-bottom: 0px;
+}
+
+.about_area .main_title p {
+  margin-bottom: 20px;
+}
+
+.about_area .about_img {
+  position: relative;
+  right: 250px;
+}
+
+@media (max-width: 1480px) {
+  .about_area .about_img {
+    right: 0;
+  }
+  .about_area .about_img img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 991px) {
+  .about_area .about_img {
+    display: none;
+  }
+
+  h1 {
+    font-size: 60px;
+  }
+
+}

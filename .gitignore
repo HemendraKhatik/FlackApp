@@ -5,6 +5,8 @@
 /flask_session/
 .env
 /venv/
+/build/
+/dist/
 
 ######################
 # Node
@@ -109,3 +111,6 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+models/__pycache__/
+models/migration/__pycache__/
+util/__pycache__/
