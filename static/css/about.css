@@ -57,6 +57,10 @@ p {
   margin-bottom: 20px;
 }
 
+.about_area .main_title ul {
+  padding-left: 40px;
+}
+
 .about_area .about_img {
   position: relative;
   right: 250px;
