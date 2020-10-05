@@ -260,9 +260,15 @@ def channel(channel_id):
     channel_name = channel.channel
     channel_decription = channel.description
     channels = channel_dao.findall()
-    return render_template("chatroom.html", user_id=session['user_id'], user_name=session['username'],
+    # if user is not logged in  set it's id and username to guest
+    try:
+        user_id = session['user_id']
+        user_name = session['username']
+    except:
+        user_id = "guest"
+        user_name = "guest"
+    return render_template("chatroom.html", user_id=user_id, user_name=user_name,
                            channel_name=channel_name, channels=channels, channel_decription=channel_decription)
-
 
 @socketio.on("entry message")
 def message(data):
