@@ -26,9 +26,16 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Settings</a>
                             </li>
+                            {% if user_name  == "guest": %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('login') }}">login</a>
+                            </li>
+                            {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
                             </li>
+                            {% endif %}
+
                         </ul>
                     </div>
                 </div>
