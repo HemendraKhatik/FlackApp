@@ -8,55 +8,31 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_socketio import SocketIO, emit, join_room, send
 from functools import wraps  # for security purpose
 
-from models.channel import ChannelDAO, Channel
-from models.exceptions import WordSizeException
-from models.user import UserDAO, User
-from util.encryption import *
-from util.form_validation import UserFieldValidation
 
+from util.encryption import *
+from schema import *
 
 """Start of flask app initialization"""
 
 app = Flask(__name__)
-DATABASE_URL = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///flack.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SECRET_KEY"] = "the secret key"
 
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+db.init_app(app)
+
 socketio = SocketIO(app)
-
-# Check for environment variable
-if not os.getenv("DATABASE_URL"):
-    raise RuntimeError("DATABASE_URL is not set")
 
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Set up database
-engine = create_engine(os.getenv("DATABASE_URL"))
-db = scoped_session(sessionmaker(bind=engine))
-
-user_dao = UserDAO(db)
-channel_dao = ChannelDAO(db)
-
-
-
-def setup_database():
-    global engine
-    global db
-    if engine == None:
-        engine = create_engine(os.getenv("DATABASE_URL"))
-    if db == None:
-        db = scoped_session(sessionmaker(bind=engine))
-
-
-setup_database()
-
 # Instantiating encryption util
 psw_hasher = HashTable('md5')
 msg_hasher = HashTable('sha1')
 
-"""Route Definitions"""
+# """Route Definitions"""
 
 @app.route("/index")
 def index():
@@ -80,15 +56,13 @@ def welcome():
 
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
-    # In idle database loses its connection and should has been refreshed
-    setup_database()
     if request.method == "GET":
         return render_template('signup.html', error_visibility='none')
     username = request.form.get("username")
 
     email = request.form.get("email")
     email_error_msg = form_check_email(email)
-    if email_error_msg != '':
+    if email_error_msg is not '':
         flash(email_error_msg, 'error')
         return render_template('signup.html', error_visibility='block', error_msg=email_error_msg)
 
@@ -101,22 +75,21 @@ def signup():
         if password_strength == "medium password":
             flash(password_strength, 'error')
             return redirect(request.url)
-        # The password encryption is satisfied once the user signs up in the right way so that user_dao.saveUser
-        # is responsible for encryption. Double encryption is tricky and must be avoided.
         password = request.form.get("password")
     else:
         error_msg = 'Password does not match'
         flash(error_msg, 'error')
         return render_template('signup.html', error_visibility='block')
+    #password encryption 
+    password = psw_hasher.hexdigest(request.form.get("password"))
     user = User(username=username, email=email, password=password)
-    # The password will be encrypted here and double encryption must be avoided!
-    user_dao.saveUser(user, encryptPassword=True)
+    db.session.add(user)
+    db.session.commit()
     return render_template('login.html')
-
 
 def form_check_email(email):
     error_msg = ''
-    user = user_dao.findUserByEmail(email)
+    user = User.query.filter_by(email=email).first()
     if user:
         error_msg += 'Email already exists!'
     else:
@@ -144,8 +117,6 @@ def form_password_strength(password):
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    # In idle database loses its connection and should has been refreshed
-    setup_database()
     # This route will only accept the POST request
     if request.method == "POST":
         username = request.form.get("username")
@@ -154,13 +125,8 @@ def login():
         password = psw_hasher.hexdigest(request.form.get("password"))
         user = None
         """To ensure that user can log in with either of username and password"""
-        try:
-            if UserFieldValidation().validateEmail(username):
-                user = user_dao.findUserByEmail(username)
-            else:
-                user = user_dao.findUserByUsername(username)
-        except WordSizeException as e:
-            user = user_dao.findUserByUsername(username)
+    
+        user = User.query.filter_by(username=username).first()
         if user is None:
             flash('Account does not exist')
             return redirect(url_for('index'))
@@ -190,11 +156,9 @@ def logout():
 @app.route("/home", methods=["POST", "GET"])
 def home():
     if request.method == "POST":
-        # In idle database loses its connection and should has been refreshed
-        setup_database()
-        channels = channel_dao.findall()
+        channels = Channels.query.all()
         return render_template(
-            "chatroom.html", user_id=session['user_id'], user_name=session['username'], channels=channels
+            "chatroom.html", user_id=session['user_id'], user_name=session['username'],channels=channels
         )
     else:
         if request.method == "GET":
@@ -225,7 +189,10 @@ def channel_creation():
     channel = request.form.get("channel")
     description = request.form.get("description")
     u_id = request.form.get("u_id")
-    channel_dao.saveChannel(Channel(channel=channel, description=description, u_id=u_id))
+
+    add_channel = Channels(channel=channel, description=description, u_id=u_id)
+    db.session.add(add_channel)
+    db.session.commit()
     return redirect(url_for('channels'))
 
 
@@ -233,7 +200,7 @@ def channel_creation():
 @login_required
 def channels():
     """Lists all channels."""
-    channels = channel_dao.findall()
+    channels = Channels.query.all()
     flack = "Flack"
     channel_decription = "This room is flack official public room"
     return render_template("chatroom.html", flack=flack, user_id=session['user_id'], user_name=session['username'],
@@ -242,7 +209,7 @@ def channels():
 @app.route("/channels/public")
 def public():
     """Lists all channels."""
-    channels = channel_dao.findall()
+    channels = Channels.query.all()
     flack = "Flack"
     channel_decription = "This room is flack official public room"
     return render_template("chatroom.html", flack=flack, user_id="guest_id", user_name="guest",
@@ -251,15 +218,14 @@ def public():
 @app.route("/channels/<int:channel_id>")
 # @login_required
 def channel(channel_id):
-    # In idle database loses its connection and should has been refreshed
-    setup_database()
     # Make sure channel exists.
-    channel = channel_dao.findChannelByChannelID(channel_id)
+    channel = Channels.query.filter_by(id=channel_id).first()
     if channel is None:
         return "No such channel."
     channel_name = channel.channel
     channel_decription = channel.description
-    channels = channel_dao.findall()
+    channels = Channels.query.all()
+
     # if user is not logged in  set it's id and username to guest
     try:
         user_id = session['user_id']
@@ -289,5 +255,7 @@ def message(data):
     join_room(room)
     emit("announce message", {"message": message, "name": name, "time": time}, room=room, broadcast=True)
 
+
 if __name__ == '__main__':
-    socketio.run(app)
+    with app.app_context():
+        socketio.run(app)

@@ -1,12 +1,3 @@
-"""
-Author:		kaloneh <kaloneh@gmail.com>
-Comment:	for the future sake of security it's necessary to encrypt all messages and passwords.
-			When the database user_table is diclosured or revealed not only there is no chance to
-			protect the current user, but also other users' plain data can be manipulated, however,
-			encrypting passwords buy some times to be decrypted so that broadcasting an anouncement
-			can aware users to make changes and then migrating to proper pool to avoid the disclosure!
-"""
-
 import hashlib
 
 class HashTable(object):
