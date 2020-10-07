@@ -18,13 +18,13 @@
                        {% endif %}
                     {% endwith %}
                     <form action="{{ url_for('login') }}" method="POST">
-                        <div class="inputBox">
-                            <input type="text" name="username" autocomplete="off" required="">
-                            <label for="stuff" class="fas fa-envelope input-icon"> Username</label>
+                        <div class="input-group">
+                            <input id="inputField" required class="input-area" type="text" autocomplete="off" autofocus name="username" type="text">
+                            <label for="inputField" class="label">Username</label>
                         </div>
-                        <div class="inputBox">
-                            <input type="password" name="password" autocomplete="off" required="">
-                            <label for="stuff" class="fas fa-lock input-icon"> password</label>
+                        <div class="input-group">
+                            <input type="password" id="inputField" required class="input-area" autocomplete="off" autofocus name="password" type="password">
+                            <label for="inputField" class="label">Password</label>
                         </div>
                         <div style="display: flex;justify-content: space-between;">
                             <button class="login-btn" type="submit">Login</button>
@@ -38,4 +38,45 @@
             </div>
         </div>
     </div>
+    <style>
+        .input-group {
+        position: relative;
+        padding: 10px;
+        font-family: 'Work Sans', sans-serif;
+        }
+        .input-group .input-area {
+        outline: none;
+        border: 2px solid white;
+        padding: 12px 13px;
+        font-size: 18px;
+        border-radius: 30px;
+        padding-left: 32px;
+        background-color: #282B33;
+        color: white;
+        }
+        .input-group .input-area:focus {
+        border: 2px solid #48A7EE;   
+        }
+        .input-group .input-area:focus + .label {
+        top: -6px;
+        padding: 0 3px;
+        font-size: 14px;
+        color: #48A7EE;
+        }
+        .input-group .label {
+        color: white;
+        position: absolute;
+        margin-top: 4px;
+        top: 20px;
+        left: 40px;
+        background: #282B33;
+        transition: .3s;
+        }
+        .input-group .input-area:valid + .label {
+        top: -6px;
+        padding: 0 3px;
+        font-size: 14px;
+        color: #48A7EE;
+        }
+    </style>
 {% endblock %}
