@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/chatroom.css') }}">
+{% endblock %}
 {% block body %}
     <div class="container-fluid">
         {% block nav %}{{ super() }}{% endblock %}
