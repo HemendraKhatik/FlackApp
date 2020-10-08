@@ -1,44 +1,59 @@
-{% extends "base.html" %}
-{% block styles %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
-{% endblock %}
-{% block body %}
-    <div class="container-fluid">
-        <div class="row sideBar">
-            <div class="col-md-6 pt-5">
-                <h1 style="margin-top: 10%;text-align: center; font-size: 100px;" class="animated bounceIn">Flack</h1>
-                <h3 style="text-align: center;" class="animated pulse delay-2s">An anonymous messaging service</br><span
-                        class="text-danger">beta version</span></h3>
-            </div>
-            <div class="col-md-6 animated bounceIn delay-1s">
-                <div class="box">
-                    <h2>Login</h2>
-                    {% with messages = get_flashed_messages() %}
-                       {% if messages %}
-                          {% for message in messages %}
-                            <div class="alert alert-danger" role="alert">{{ message }}</div>
-                          {% endfor %}
-                       {% endif %}
-                    {% endwith %}
-                    <form action="{{ url_for('login') }}" method="POST">
-                        <div class="inputBox">
-                            <input type="text" name="username" autocomplete="off" required="">
-                            <label for="stuff" class="fas fa-envelope input-icon"> Username</label>
-                        </div>
-                        <div class="inputBox">
-                            <input type="password" name="password" autocomplete="off" required="">
-                            <label for="stuff" class="fas fa-lock input-icon"> password</label>
-                        </div>
-                        <div style="display: flex;justify-content: space-between;">
-                            <button class="login-btn" type="submit">Login</button>
-                            <a href="{{ url_for('public') }}">Continue As a guest</a>
-                        </div>
-                        
-                        <p style="color: white;text-align: center;" class="mt-4">Don't have an account <a
-                                href="{{ url_for('signup') }}">Sign up</a> here.</p>
-                    </form>
-                </div>
-            </div>
+{% extends "base.html" %} {% block styles %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/login.css') }}"
+/>
+{% endblock %} {% block body %}
+<section id="login-page">
+  <div id="app-description">
+    <h1>Flack</h1>
+    <p>An anonymous messaging service</p>
+    <div>beta version</div>
+  </div>
+  <div id="login-box">
+    <h2>Login</h2>
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %}
+    <div role="alert">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+    <form action="{{ url_for('login') }}" method="POST">
+      <label for="stuff" aria-label="username">
+        <div class="input-container">
+          <i class="fas fa-user"></i>
+          <input
+            type="text"
+            name="username"
+            autocomplete="off"
+            required=""
+            placeholder="Username"
+          />
         </div>
-    </div>
+      </label>
+
+      <label for="stuff" aria-label="password">
+        <div class="input-container">
+          <i class="fas fa-lock"></i>
+          <input
+            type="password"
+            name="password"
+            autocomplete="off"
+            required=""
+            placeholder="Password"
+          />
+        </div>
+      </label>
+
+      <div id="login-container">
+        <a href="{{ url_for('public') }}">Continue as a Guest</a>
+        <button type="submit">Login</button>
+      </div>
+
+      <p id="signup-call-to-action">
+        Don't have an account?
+        <a href="{{ url_for('signup') }}">Sign up</a> here.
+      </p>
+    </form>
+  </div>
+</section>
 {% endblock %}
