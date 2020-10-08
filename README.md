@@ -17,7 +17,6 @@ This is an anonymous chat application in which you can create new rooms and can 
 * Flask
 * JavaScript
 * Socket Programming
-* BootStrap
 * JQuery
 * HTML/CSS
 
