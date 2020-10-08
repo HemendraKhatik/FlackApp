@@ -1,4 +1,4 @@
-@import "variables.css";
+@import 'variables.css';
 
 * {
   font-family: Lato, Helvetica, Arial, sans-serif;
@@ -13,6 +13,8 @@ h1 {
 form {
   width: 100%;
   max-width: 400px;
+  opacity: 0;
+  animation: fadeIn 0.5s linear 0.5s forwards;
 }
 
 label {
@@ -63,6 +65,8 @@ div#app-description {
   width: 100%;
   height: 20%;
   margin-top: 8%;
+  animation: fadeIn 0.5s linear 0.5s forwards;
+  opacity: 0;
 }
 
 div#login-box {
@@ -124,7 +128,8 @@ p#signup-call-to-action a {
   color: var(--mediumBlue);
 }
 
-div#login-container a:hover, #signup-call-to-action a:hover {
+div#login-container a:hover,
+#signup-call-to-action a:hover {
   color: var(--dark);
 }
 
@@ -143,6 +148,43 @@ p#signup-call-to-action {
   color: var(--dark);
 }
 
+#chatting-people-svg {
+  display: none;
+}
+
+#bubble1,
+#bubble2,
+#bubble3,
+#bubble4 {
+  opacity: 0;
+}
+
+#bubble1 {
+  animation: fadeIn 0.5s linear 1s forwards;
+}
+
+#bubble2 {
+  animation: fadeIn 0.5s linear 1.7s forwards;
+}
+
+#bubble3 {
+  animation: fadeIn 0.5s linear 2.3s forwards;
+}
+
+#bubble4 {
+  animation: fadeIn 0.5s linear 3s forwards;
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 @media only screen and (min-width: 1024px) {
   #login-page {
     display: flex;
@@ -151,5 +193,15 @@ p#signup-call-to-action {
     height: 100vh;
     width: 100vw;
     background-color: var(--babyBlue);
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  #chatting-people-svg {
+    display: block;
+    position: absolute;
+    width: 30%;
+    height: auto;
+    bottom: 0;
   }
 }
