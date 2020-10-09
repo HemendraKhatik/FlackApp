@@ -1,76 +1,89 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <title>FLACK an anonymous chatting website</title>
     <!-- Required meta tags -->
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <!-- fonts -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"/>
-    <link href="https://fonts.googleapis.com/css?family=Coiny" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet'>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Coiny"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lobster"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Muli"
+      rel="stylesheet"
+    />
     <!-- for animation -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}"/>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/welcome.css') }}"
+    />
     <!-- additional page-specific styles -->
     {% block styles %}{% endblock %}
-</head>
+  </head>
 
+  <body>
+    {% block body %} {% block nav %}
 
+    <!-- Navigation -->
+    <nav>
+      <a id="logo" href="#">Flack</a>
+      <button type="button" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
 
-<body>
-{% block body %}
-    {% block nav %}
-    <div>
-        <!-- Navigation -->
-        <nav>
-            <div>
-                <a id="logo" href="#">Flack</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Home
-                                <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('about') }}">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contact</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Settings</a>
-                        </li>
-                        {% if not session.username %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                        </li>
-                        {% endif %}
+      <ul>
+        <li>
+          <a href="#">Home </a>
+        </li>
+        <li>
+          <a href="{{ url_for('about') }}">About</a>
+        </li>
+        <li>
+          <a href="#">Contact</a>
+        </li>
+        <li>
+          <a href="#">Settings</a>
+        </li>
+        {% if not session.username %}
+        <li>
+          <a href="{{ url_for('login') }}">Login</a>
+        </li>
+        {% else %}
+        <li>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
 
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
-    {% endblock %}
-{% endblock %}
-</body>
+    {% endblock %} {% endblock %}
+  </body>
 
-<!-- jQuery library -->
-<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-<!-- Popper JS -->
-<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-<!-- additional page-specific scripts -->
-{% block scripts %}{% endblock %}
+  <!-- jQuery library -->
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+  <!-- Popper JS -->
+  <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+  <!-- additional page-specific scripts -->
+  {% block scripts %}{% endblock %}
 </html>

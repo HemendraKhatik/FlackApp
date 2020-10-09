@@ -8,6 +8,7 @@ h1 {
   text-align: center;
   font-size: 7rem;
   color: var(--dark);
+  font-family: 'Lobster', cursive;
 }
 
 form {
@@ -28,11 +29,15 @@ label {
   margin: 5%;
 }
 
-label:hover {
+label:hover,
+label:active,
+label:focus {
   border: 1px solid var(--mediumBlue);
 }
 
-label:hover > div.input-container > i.fas {
+label:hover > div.input-container > i.fas,
+label:active > div.input-container > i.fas,
+label:focus > div.input-container > i.fas {
   color: var(--mediumBlue);
 }
 
@@ -88,10 +93,15 @@ div#app-description p {
   color: var(--dark);
 }
 
+div#app-description p span {
+  color: var(--teal);
+  font-weight: 900;
+}
+
 div#app-description div {
   background-color: var(--babyBlue);
-  border: 1px solid var(--danger);
-  color: var(--danger);
+  border: 1px solid var(--teal);
+  color: var(--teal);
   font-size: 18px;
   border-radius: 30px;
   padding: 0.3rem 1.3rem;
@@ -125,7 +135,7 @@ div#app-description div {
 p#signup-call-to-action a {
   font-style: italic;
   font-size: 14px;
-  color: var(--mediumBlue);
+  color: var(--teal);
 }
 
 div#login-container a:hover,
@@ -149,40 +159,12 @@ p#signup-call-to-action {
 }
 
 #chatting-people-svg {
-  display: none;
-}
-
-#bubble1,
-#bubble2,
-#bubble3,
-#bubble4 {
-  opacity: 0;
-}
-
-#bubble1 {
-  animation: fadeIn 0.5s linear 1s forwards;
-}
-
-#bubble2 {
-  animation: fadeIn 0.5s linear 1.7s forwards;
-}
-
-#bubble3 {
-  animation: fadeIn 0.5s linear 2.3s forwards;
-}
-
-#bubble4 {
-  animation: fadeIn 0.5s linear 3s forwards;
-}
-
-@keyframes popIn {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
+  display: block;
+  position: absolute;
+  width: 80%;
+  max-width: 300px;
+  height: auto;
+  bottom: 0;
 }
 
 @media only screen and (min-width: 1024px) {
@@ -194,14 +176,42 @@ p#signup-call-to-action {
     width: 100vw;
     background-color: var(--babyBlue);
   }
-}
 
-@media only screen and (min-width: 1440px) {
   #chatting-people-svg {
-    display: block;
-    position: absolute;
     width: 30%;
-    height: auto;
-    bottom: 0;
+    max-width: none;
+  }
+
+  #bubble1,
+  #bubble2,
+  #bubble3,
+  #bubble4 {
+    opacity: 0;
+  }
+
+  #bubble1 {
+    animation: fadeIn 0.5s linear 1s forwards;
+  }
+
+  #bubble2 {
+    animation: fadeIn 0.5s linear 1.7s forwards;
+  }
+
+  #bubble3 {
+    animation: fadeIn 0.5s linear 2.3s forwards;
+  }
+
+  #bubble4 {
+    animation: fadeIn 0.5s linear 3s forwards;
+  }
+
+  @keyframes popIn {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
   }
 }
