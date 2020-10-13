@@ -37,10 +37,12 @@ nav ul {
 
 nav ul li {
   list-style-type: none;
+  margin: 0px 10px;
 }
 
 nav a {
   text-decoration: none;
+  font-family: Lato, Helvetica, Arial, sans-serif;
 }
 
 nav button {
@@ -60,5 +62,6 @@ nav button i {
 
   nav ul {
     display: flex;
+    align-items: center;
   }
 }
