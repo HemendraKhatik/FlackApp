@@ -1,102 +1,93 @@
-{% extends "base.html" %}
-{% block body %}
-    <div class="container-fluid">
-        {% block nav %}{{ super() }}{% endblock %}
+{% extends "base.html" %} {% block styles %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/chatroom.css') }}"
+/>
+{% endblock %} {% block body %} {% block nav %}{{ super() }}{% endblock %}
+<section id="chatroom-page">
+  <div id="name-and-rooms-column">
+    <div id="name-container">
+      <h2>Choose anonymous name</h2>
+      <input
+        type="text"
+        id="name"
+        placeholder="Hello, {{ user_name }}!"
+        required=""
+      />
 
-        <div class="row pt-5 bg-size">
-            <div class="col-md-1"><!-- Hidden div --></div>
-            <div class="col-md-4">
-                <div class="setName mt-3 mb-3">
-                    <!-- Setting Anonnymous Name -->
-                    <div class="Anonymous_name_input">
-                        <h2>Set Your Anonymous Name</h2>
-                        <input type="text" id="name" value="Hello, {{ user_name }}!" required="">
-                        <center>
-                            <input class="pointer btn btn-primary" id="nama" type="submit" onclick="setName()"
-                                   value="Set">
-                        </center>
-                        <center><span id="userOnline"></span></center>
-                    </div>
-                </div>
-                <div class="setRoom">
-                    <!-- Showing all rooms -->
-                    <div class="container">
-                        <div class="row p-3">
-                            <div class="col-md-6">
-                                <p onclick="on()" class="pointer">+ Create room</p>
-                            </div>
-                            <div id="overlay">
-                                <div id="createRoom">
-                                    <h3>Create room</h3>
-                                    <form action="{{ url_for('channel_creation') }}" method="POST">
-                                        <div class="form-group">
-                                            <label for="recipient-name" class="col-form-label">Channel name</label>
-                                            <input type="text" name="channel" class="form-control" id="recipient-name"
-                                                   required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="message-text" class="col-form-label">Description</label>
-                                            <textarea class="form-control" name="description" id="message-text"
-                                                      required></textarea>
-                                        </div>
-                                        <!-- Sending hidden parameter so that we can know that which channel is belongs to which user -->
-                                        <input type="hidden" name="u_id" value="{{ user_id }}">
-                                        <button onclick="off()" type="submit" class="btn btn-primary m-2 float-right">
-                                            Create
-                                        </button>
-                                    </form>
-                                    <button onclick="off()" class="btn btn-primary m-2 float-right">close</button>
-                                </div>
-                            </div>
-                            <script>
-
-                            </script>
-                            <div class="col-md-6">
-                                <!-- <p class="pointer">+ Join room</p> -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <h2>Rooms</h2>
-                    <ul>
-                        {% for channel in channels %}
-                            <li><i class="far fa-comments"></i>
-                                <a href="{{ url_for('channel', channel_id=channel.id) }}">
-                                    <span>{{ channel.channel }}</span>
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-6 chatBox mt-3">
-                <div class="row">
-                    <div class="chatBoxHeader pt-2">
-                        <center><h5 class="font_style">Connected to <span id="room">{{ flack }}{{ channel_name }}</span>
-                            room</h5></center>
-                    </div>
-                    <div style="color: black;" class="chatBoxBody p-4" id="message">
-                        <!-- Messages will appear here-->
-                        <div id="pop" class="p-4 text-center animated bounceIn delay-1s">
-                            <h4>Enter in {{ flack }}{{ channel_name }}</h4>
-                            <p>{{ channel_decription }}</p>
-                            <button id="enter" class="btn btn-secondary">Enter</button>
-                        </div>
-                    </div>
-                    <div class="chatBoxFooter">
-                        <!-- Message sending bar -->
-                        <input type="text" id="task1" placeholder="Send Message..."/>
-                        <button class="pointer" type="submit" id="send" disabled>
-                            <i class="far fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-1"><!-- Hidden div --></div>
-        </div>
+      <button id="set-name-button" type="submit" onclick="setName()">
+        Set
+      </button>
     </div>
-{% endblock %}
-{% block scripts %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+    <h2>Rooms</h2>
+    <div id="rooms">
+      <div id="create-room">
+        <h2>Create room</h2>
+        <form action="{{ url_for('channel_creation') }}" method="POST">
+          <div>
+            <label for="recipient-name">Channel name</label>
+            <input type="text" name="channel" id="recipient-name" required />
+          </div>
+          <div>
+            <label for="message-text">Description</label>
+            <textarea name="description" id="message-text" required></textarea>
+          </div>
+          <!-- Sending hidden parameter so that we can know that which channel is belongs to which user -->
+          <input type="hidden" name="u_id" value="{{ user_id }}" />
+          <button onclick="off()" type="submit">Create</button>
+        </form>
+        <button onclick="off()">close</button>
+      </div>
+
+      <button onclick="on()" id="create-room-button">
+        <i class="fas fa-plus-circle"></i> Create room
+      </button>
+      <ul>
+        {% for channel in channels %}
+        <li>
+          <i class="far fa-comments"></i>
+          <a href="{{ url_for('channel', channel_id=channel.id) }}">
+            <span>{{ channel.channel }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div id="chatroom-container">
+    <h2>
+      Connected to
+      <span id="room">{{ flack }}{{ channel_name }}</span>
+    </h2>
+
+    <div id="message">
+      <!-- Messages will appear here-->
+      <div id="pop">
+        <h3>Enter <span>{{ flack }}{{ channel_name }}</span></h3>
+        <p>{{ channel_decription }}</p>
+        <button id="enter">Enter</button>
+      </div>
+    </div>
+    <div id="message-bar-container">
+      <!-- Message sending bar -->
+      <input type="text" id="task1" placeholder="Send Message..." />
+      <button type="submit" id="send" disabled>
+        <i class="far fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+{% endblock %} {% block scripts %}
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='js/socket.io.min.js') }}"
+></script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='js/index.js') }}"
+></script>
 {% endblock %}
