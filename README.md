@@ -98,9 +98,5 @@ An anonymous chat application to keep your identity safe.
 
 [Click here](https://github.com/HemendraKhatik/FlackApp) to Contribute 
 
-## About Me:
-
-[Click Here](https://hemendrakhatik.github.io/Portfolio/) to know about me.
-
 
 
