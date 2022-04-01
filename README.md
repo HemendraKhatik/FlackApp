@@ -1,16 +1,21 @@
-# Flack
-
-
 ![Home page](static/home_page.png)
 
+## Project
+An anonymous chat application to keep your identity safe.
 
-## About Project:
-This is an anonymous chat application in which you can create new rooms and can join existing rooms and can chat with other people in room.
-## Uniqueness About This Project
-* Flack does not store user's communications via chatrooms in Flack's database server and once a message's delivered it'll be disposed of, however, it remains in the owner's session untill the owner as user is logged out.
-* It let users choose a nickname due to sake of users' identities.
+## Features
+- Create new chat rooms.
+- Join existing chat rooms. 
+- Set your anonymous username.
+- Real-time message delivery.
+- Chat without creating an account.
+
+## How does flack keep the user anonymous?
+
+* Flack does not store users' communications via chatrooms in Flack's database server and once a message's delivered it'll be disposed of, however, it remains in the owner's session until the owner logged out.
+* It lets users choose a nickname due to sake of users' identities.
 - [x] Passwords are encrypted
-- [x] Nicknames represents users behind their identities.
+- [x] Nicknames represent users behind their identities.
 
 ## Technology Stack Used In This Project
 * Python
@@ -38,7 +43,7 @@ This is an anonymous chat application in which you can create new rooms and can 
     ```
     pip install -r requirements.txt 
     ```
-4. Run the following command to create database locally
+4. Run the following command to create a database locally
     ```
     python create.py
     ```
@@ -46,7 +51,7 @@ This is an anonymous chat application in which you can create new rooms and can 
     ```
     export FLASK_APP=application.py
     ```    
-6. Run application
+6. Run the application
     ```
     flask run
     ```
@@ -60,18 +65,18 @@ This is an anonymous chat application in which you can create new rooms and can 
     ```
 3. Create a new branch (It's necessary).
     ```
-    git checkout -b branchName
+    git checkout -b branch-name
     ```
 4. Make changes and Add to Staging here.
     ```
-    git add .
+    git add.
     ```
 5. Commit changes.
     ```
     git commit -m "Message you want to write"
     ```
     * _Always __write the message__ short and easy to understand (ideally 3 to 5 words)._
-6. Push the changes so that Pull request will be generated.
+6. Push the changes so that a pull request will be generated.
     ```
     git push -u origin branchName
     ```
