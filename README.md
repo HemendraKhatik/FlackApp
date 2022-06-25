@@ -22,7 +22,6 @@ An anonymous chat application to keep your identity safe.
 * Flask
 * JavaScript
 * Socket Programming
-* BootStrap
 * JQuery
 * HTML/CSS
 
